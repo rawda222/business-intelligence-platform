@@ -1,6 +1,6 @@
 # 🚀 Business Intelligence Platform
 
-AI-powered backend platform for business analysis.
+> AI-powered business analysis platform built with FastAPI + Gemini
 
 ## 🧠 Features
 - JWT Authentication
