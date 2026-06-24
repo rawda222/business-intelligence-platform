@@ -1,12 +1,25 @@
-# Business Intelligence Platform
+# 🚀 Business Intelligence Platform
 
-Multi-tenant AI-powered BI platform.
+AI-powered backend platform for business analysis.
 
-## Stack
-- Backend: FastAPI + PostgreSQL + MongoDB + Redis
-- Frontend: Next.js 15
-- AI: Vertex AI Gemini + Anthropic + OpenAI
+## 🧠 Features
+- JWT Authentication
+- Business Management (CRUD)
+- SWOT Analysis (AI-powered via Gemini)
+- MongoDB Reports Storage
+- Multi-tenant Architecture
 
-## Quick Start
-cd infrastructure
-docker-compose up -d
+## 🛠️ Tech Stack
+- FastAPI
+- PostgreSQL
+- MongoDB
+- Redis
+- Vertex AI (Gemini)
+- Docker
+
+## ▶️ Run Locally
+
+```bash
+pip install -r requirements.txt
+docker compose up -d
+uvicorn app.main:app --reload
