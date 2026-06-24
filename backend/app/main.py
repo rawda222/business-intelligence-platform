@@ -1,6 +1,6 @@
 """
 Business Intelligence Platform - Main Application
-Day 6: With Authentication
+Day 8: With Full Analysis Pipeline (Normalize → Themes → SWOT)
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -11,7 +11,7 @@ from app.db.redis_client import connect_to_redis, close_redis, check_redis_healt
 from app.db.postgres import check_postgres_health, close_postgres
 
 # Import routers
-from app.api.v1 import auth, businesses, swot
+from app.api.v1 import auth, businesses, swot, analysis
 
 
 # ============================================================
@@ -53,6 +53,8 @@ app = FastAPI(
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(businesses.router, prefix=settings.API_V1_PREFIX)
 app.include_router(swot.router, prefix=settings.API_V1_PREFIX)
+app.include_router(analysis.router, prefix=settings.API_V1_PREFIX)
+
 
 # ============================================================
 # Root & Status Endpoints
@@ -109,8 +111,9 @@ async def info():
         "environment": settings.ENVIRONMENT,
         "features": [
             "JWT Authentication",
-            "AI-powered SWOT Analysis",
-            "Strategy Generation",
-            "Industry-specific Dashboards",
+            "Business Management (CRUD)",
+            "AI-powered SWOT Analysis (Vertex AI Gemini)",
+            "Full Analysis Pipeline (Normalize -> Themes -> SWOT)",
+            "MongoDB Reports Storage",
         ],
     }
