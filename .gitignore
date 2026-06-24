@@ -14,3 +14,5 @@ node_modules/
 .ruff_cache/
 dist/
 build/
+secrets/
+*.db
