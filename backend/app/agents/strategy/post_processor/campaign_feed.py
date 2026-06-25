@@ -10,7 +10,7 @@ from app.agents.strategy.schemas.campaign import CampaignBriefFeedItem
 
 
 # Only include strong strategies
-ALLOWED_CONFIDENCE = {"confirmed", "probable"}
+ALLOWED_CONFIDENCE = {"confirmed", "probable", "exploratory"}
 
 
 def build_campaign_feed(tows: TOWSMatrix) -> List[CampaignBriefFeedItem]:
@@ -25,8 +25,8 @@ def build_campaign_feed(tows: TOWSMatrix) -> List[CampaignBriefFeedItem]:
     )
 
     feed = []
-
     idx = 1
+
     for s in strategies:
         if s.confidence not in ALLOWED_CONFIDENCE:
             continue
@@ -57,16 +57,12 @@ def _build_pillar(strategy) -> str:
     """Messaging pillar based on strategy type."""
     if strategy.strategy_type == "SO":
         return "growth"
-
     if strategy.strategy_type == "WO":
         return "improvement"
-
     if strategy.strategy_type == "ST":
         return "defense"
-
     if strategy.strategy_type == "WT":
         return "risk_mitigation"
-
     return "general"
 
 
@@ -74,14 +70,10 @@ def _suggest_channels(strategy) -> List[str]:
     """Suggest marketing channels."""
     if strategy.strategy_type == "SO":
         return ["social_media", "ads", "influencers"]
-
     if strategy.strategy_type == "WO":
         return ["email", "customer_feedback"]
-
     if strategy.strategy_type == "ST":
         return ["branding", "PR"]
-
     if strategy.strategy_type == "WT":
         return ["internal", "support"]
-
     return ["general"]
