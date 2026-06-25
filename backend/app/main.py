@@ -1,6 +1,6 @@
 """
 Business Intelligence Platform - Main Application
-Day 8: With Full Analysis Pipeline (Normalize → Themes → SWOT)
+With Full Pipeline (Normalize → Themes → SWOT v7 → Strategy)
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -10,8 +10,8 @@ from app.db.mongo import connect_to_mongo, close_mongo, check_mongo_health
 from app.db.redis_client import connect_to_redis, close_redis, check_redis_health
 from app.db.postgres import check_postgres_health, close_postgres
 
-# Import routers
-from app.api.v1 import auth, businesses, swot, analysis
+# Routers
+from app.api.v1 import auth, businesses, swot, analysis, full_pipeline
 
 
 # ============================================================
@@ -54,10 +54,11 @@ app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
 app.include_router(businesses.router, prefix=settings.API_V1_PREFIX)
 app.include_router(swot.router, prefix=settings.API_V1_PREFIX)
 app.include_router(analysis.router, prefix=settings.API_V1_PREFIX)
+app.include_router(full_pipeline.router, prefix=settings.API_V1_PREFIX)
 
 
 # ============================================================
-# Root & Status Endpoints
+# Root Endpoints
 # ============================================================
 @app.get("/")
 async def root():
@@ -112,8 +113,9 @@ async def info():
         "features": [
             "JWT Authentication",
             "Business Management (CRUD)",
-            "AI-powered SWOT Analysis (Vertex AI Gemini)",
-            "Full Analysis Pipeline (Normalize -> Themes -> SWOT)",
+            "AI-powered SWOT v7 (Vertex AI Gemini)",
+            "Strategy Agent v1 (Vertex AI Gemini)",
+            "Full Pipeline (Normalize -> Themes -> SWOT -> Strategy)",
             "MongoDB Reports Storage",
         ],
     }
