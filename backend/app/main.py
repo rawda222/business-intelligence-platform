@@ -4,6 +4,7 @@ With Full Pipeline (Normalize → Themes → SWOT v7 → Strategy)
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware  # ✅ NEW
 
 from app.core.config import settings
 from app.db.mongo import connect_to_mongo, close_mongo, check_mongo_health
@@ -22,13 +23,13 @@ async def lifespan(app: FastAPI):
     print("\n" + "=" * 60)
     print(f"  Starting {settings.APP_NAME}")
     print("=" * 60)
-    
+
     await connect_to_mongo()
     await connect_to_redis()
     print("[+] All connections established\n")
-    
+
     yield
-    
+
     print("\n  Shutting down...")
     await close_mongo()
     await close_redis()
@@ -44,6 +45,20 @@ app = FastAPI(
     version=settings.APP_VERSION,
     debug=settings.DEBUG,
     lifespan=lifespan,
+)
+
+# ============================================================
+# ✅ CORS Middleware (LINK to Frontend on :3000)
+# ============================================================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -85,13 +100,13 @@ async def deep_health_check():
     postgres_health = await check_postgres_health()
     mongo_health = await check_mongo_health()
     redis_health = await check_redis_health()
-    
+
     all_healthy = all([
         postgres_health["status"] == "healthy",
         mongo_health["status"] == "healthy",
         redis_health["status"] == "healthy",
     ])
-    
+
     return {
         "status": "healthy" if all_healthy else "degraded",
         "service": "bi-platform-api",

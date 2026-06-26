@@ -1,10 +1,9 @@
 """
 SWOT Agent v7 - User Prompt Builder
 ====================================
-Builds the user prompt sent to LLM.
-
-Now supports raw customer reviews directly.
+Now ENFORCES that Gemini returns evidence_refs (real quotes per item).
 """
+
 import json
 from typing import Any, Dict, List
 
@@ -19,10 +18,11 @@ def build_user_prompt(
     raw_reviews: List[str] = None,
 ) -> str:
     """
-    Build the LLM user prompt using:
+    Build the LLM user prompt including:
     - Business info
     - Themes
-    - Raw customer reviews (to give Gemini real evidence)
+    - Reviews
+    - Strict format with evidence_refs
     """
 
     themes_payload = []
@@ -37,10 +37,6 @@ def build_user_prompt(
                 "neutral": t.sentiment_balance.neutral,
                 "mixed": t.sentiment_balance.mixed,
             },
-            "target_score": t.target_score,
-            "competitor_score": t.competitor_score,
-            "performance_gap": t.performance_gap,
-            "mention_count": len(t.mentions),
         })
 
     prompt_data = {
@@ -53,31 +49,53 @@ def build_user_prompt(
 
     data_json = json.dumps(prompt_data, indent=2, ensure_ascii=False)
 
-    # 🔥 Reviews block
     reviews_block = ""
     if raw_reviews:
         joined = "\n".join(f"- {r}" for r in raw_reviews if r)
-        reviews_block = f"\nCUSTOMER REVIEWS:\n{joined}\n"
+        reviews_block = f"\n[CUSTOMER REVIEWS]\n{joined}\n"
 
-    user_prompt = f"""Analyze the following business and produce a SWOT analysis.
+    user_prompt = f"""You are an AI Business Strategist.
+
+Analyze the following business and produce a SWOT analysis.
 
 BUSINESS DATA:
 {data_json}
 {reviews_block}
-INSTRUCTIONS:
-1. Read the CUSTOMER REVIEWS carefully.
-2. Cross-reference with themes and sentiment balances.
-3. For high-positive themes → propose a Strength with reasoning grounded in the reviews.
-4. For high-negative themes → propose a Weakness with reasoning grounded in the reviews.
-5. Identify Opportunities (growth signals implied in reviews).
-6. Identify Threats (risks implied in reviews).
-7. Use the exact theme_category as 'source_theme' for each item.
-8. Provide reasoning grounded in actual review wording.
 
-OUTPUT STRICT JSON FORMAT:
+RULES (MANDATORY):
+1. Read the CUSTOMER REVIEWS carefully.
+2. Generate SWOT (strengths, weaknesses, opportunities, threats).
+3. EACH SWOT item MUST contain:
+   - title
+   - reasoning (1-3 sentences)
+   - source_theme
+   - quadrant
+   - tags (1-5 short tags)
+   - scoring (importance, impact, confidence)
+   - evidence_refs (MAX 3 SHORT EXACT QUOTES from the reviews above)
+
+4. evidence_refs MUST contain real quotes from the reviews. 
+   NEVER paraphrase. NEVER write empty arrays unless absolutely no review supports the item.
+
+5. Reasoning MUST be supported by the evidence_refs.
+
+STRICT JSON FORMAT:
 {{
   "swot_report": {{
-    "strengths": [...],
+    "strengths": [
+      {{
+        "title": "...",
+        "reasoning": "...",
+        "source_theme": "...",
+        "quadrant": "strengths",
+        "tags": ["..."],
+        "scoring": {{"importance": 8, "impact": 8, "confidence": 0.9}},
+        "evidence_refs": [
+          "Exact quote 1",
+          "Exact quote 2"
+        ]
+      }}
+    ],
     "weaknesses": [...],
     "opportunities": [...],
     "threats": [...]
@@ -89,7 +107,7 @@ OUTPUT STRICT JSON FORMAT:
   }}
 }}
 
-Return STRICT JSON only.
+Return STRICT JSON only — no comments, no commentary.
 """
 
     return user_prompt
