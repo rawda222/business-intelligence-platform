@@ -1,23 +1,19 @@
 """
 Business Intelligence Platform - Main Application
-With Full Pipeline (Normalize → Themes → SWOT v7 → Strategy)
+With Full Pipeline + CORS open for development
 """
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware  # ✅ NEW
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.mongo import connect_to_mongo, close_mongo, check_mongo_health
 from app.db.redis_client import connect_to_redis, close_redis, check_redis_health
 from app.db.postgres import check_postgres_health, close_postgres
 
-# Routers
-from app.api.v1 import auth, businesses, swot, analysis, full_pipeline
+from app.api.v1 import auth, businesses, swot, analysis, full_pipeline, reports
 
 
-# ============================================================
-# Lifespan Manager
-# ============================================================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("\n" + "=" * 60)
@@ -36,9 +32,6 @@ async def lifespan(app: FastAPI):
     await close_postgres()
 
 
-# ============================================================
-# FastAPI App
-# ============================================================
 app = FastAPI(
     title=settings.APP_NAME,
     description="Multi-tenant AI-powered Business Intelligence Platform",
@@ -47,18 +40,18 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
 # ============================================================
-# ✅ CORS Middleware (LINK to Frontend on :3000)
+# ✅ CORS Middleware - السماح لأي origin (development)
 # ============================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 
@@ -70,11 +63,8 @@ app.include_router(businesses.router, prefix=settings.API_V1_PREFIX)
 app.include_router(swot.router, prefix=settings.API_V1_PREFIX)
 app.include_router(analysis.router, prefix=settings.API_V1_PREFIX)
 app.include_router(full_pipeline.router, prefix=settings.API_V1_PREFIX)
+app.include_router(reports.router, prefix=settings.API_V1_PREFIX)
 
-
-# ============================================================
-# Root Endpoints
-# ============================================================
 @app.get("/")
 async def root():
     return {
@@ -128,8 +118,8 @@ async def info():
         "features": [
             "JWT Authentication",
             "Business Management (CRUD)",
-            "AI-powered SWOT v7 (Vertex AI Gemini)",
-            "Strategy Agent v1 (Vertex AI Gemini)",
+            "AI-powered SWOT (Vertex AI Gemini)",
+            "Strategy Agent (Vertex AI Gemini)",
             "Full Pipeline (Normalize -> Themes -> SWOT -> Strategy)",
             "MongoDB Reports Storage",
         ],

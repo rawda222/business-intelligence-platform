@@ -1,25 +1,19 @@
 """
 Business Schemas
 Pydantic schemas for Business API operations.
+Updated: Flexible business types.
 """
-from typing import Literal
+from typing import Optional
 from uuid import UUID
 from pydantic import Field
-
 
 from app.schemas.common import BaseSchema, IDSchema, TimestampSchema
 
 
 # ============================================================
-# Supported Business Types
+# Business Type (alias = str for flexibility)
 # ============================================================
-BusinessType = Literal[
-    "food_and_beverage",
-    "saas",
-    "retail",
-    "b2b_services",
-    "hospitality",
-]
+BusinessType = str
 
 
 # ============================================================
@@ -28,60 +22,50 @@ BusinessType = Literal[
 class BusinessBase(BaseSchema):
     """Base business fields."""
     name: str = Field(..., min_length=2, max_length=255)
-    business_type: BusinessType
-    industry: str | None = Field(None, max_length=100)
-    location: str | None = Field(None, max_length=255)
-    country_code: str | None = Field(None, min_length=2, max_length=2)
+    business_type: str = Field(..., min_length=1, max_length=100)
+    industry: Optional[str] = Field(None, max_length=100)
+    location: Optional[str] = Field(None, max_length=255)
+    country_code: Optional[str] = Field(None, max_length=10)
+    description: Optional[str] = Field(None, max_length=1000)
 
 
 # ============================================================
 # Input: Create Business
 # ============================================================
 class BusinessCreate(BusinessBase):
-    """
-    Schema for creating a new business.
-    Used in: POST /businesses
-    """
-    business_metadata: dict = Field(default_factory=dict)
+    """Schema for creating a new business."""
+    business_metadata: Optional[dict] = Field(default_factory=dict)
 
 
 # ============================================================
 # Input: Update Business
 # ============================================================
 class BusinessUpdate(BaseSchema):
-    """
-    Schema for updating business details.
-    All fields optional - partial update.
-    """
-    name: str | None = Field(None, min_length=2, max_length=255)
-    business_type: BusinessType | None = None
-    industry: str | None = Field(None, max_length=100)
-    location: str | None = Field(None, max_length=255)
-    country_code: str | None = Field(None, min_length=2, max_length=2)
-    business_metadata: dict | None = None
+    """Schema for updating business details."""
+    name: Optional[str] = Field(None, min_length=2, max_length=255)
+    business_type: Optional[str] = None
+    industry: Optional[str] = Field(None, max_length=100)
+    location: Optional[str] = Field(None, max_length=255)
+    country_code: Optional[str] = Field(None, max_length=10)
+    description: Optional[str] = None
+    business_metadata: Optional[dict] = None
 
 
 # ============================================================
 # Output: Business Response
 # ============================================================
 class BusinessResponse(BusinessBase, IDSchema, TimestampSchema):
-    """
-    Schema for returning business data.
-    Used in: GET /businesses/{id}, POST /businesses response
-    """
-    owner_id: UUID  # UUID as string
+    """Schema for returning business data."""
+    owner_id: UUID
     is_active: bool
     business_metadata: dict = Field(default_factory=dict)
 
 
 # ============================================================
-# Output: Business Summary (lightweight)
+# Output: Business Summary
 # ============================================================
 class BusinessSummary(IDSchema):
-    """
-    Lightweight business representation for lists.
-    Used when listing many businesses.
-    """
+    """Lightweight business representation for lists."""
     name: str
-    business_type: BusinessType
+    business_type: str
     is_active: bool

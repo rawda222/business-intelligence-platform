@@ -7,7 +7,7 @@ email-validator==2.2.0
 sqlalchemy[asyncio]==2.0.36
 asyncpg==0.30.0
 alembic==1.13.3
-psycopg2-binary==2.9.10
+psycopg2-binary
 motor==3.6.0
 beanie==1.27.0
 pymongo==4.9.2
