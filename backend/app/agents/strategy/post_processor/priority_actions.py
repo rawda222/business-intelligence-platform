@@ -42,7 +42,7 @@ def build_priority_actions(tows: TOWSMatrix) -> List[PriorityAction]:
             confidence=s.confidence,
             effort=s.estimated_effort,
             impact=s.estimated_impact,
-            success_metric="TBD",
+            success_metric=s.success_metric or "TBD",
             requires_manual_review=s.requires_manual_review,
             blocked_by=[],
         )

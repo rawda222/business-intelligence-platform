@@ -93,13 +93,22 @@ class StrategyAgent:
 
         posture = classify_strategic_posture(filtered)
 
+        # Use LLM's own posture rationale when it agrees with the
+        # deterministic label; fall back to the template on mismatch.
+        llm_posture = parsed.get("strategic_posture")
+        llm_rationale = parsed.get("posture_rationale", "")
+        posture_rationale = (
+            llm_rationale if llm_posture == posture and llm_rationale
+            else f"Auto-detected posture: {posture}"
+        )
+
         # =========================================================
         # Step 6: Build Output
         # =========================================================
         output = StrategyOutput(
             business_type=filtered.get("business_type", "unknown"),
             strategic_posture=posture,
-            posture_rationale=f"Auto-detected posture: {posture}",
+            posture_rationale=posture_rationale,
             tows_matrix=tows_matrix,
             priority_action_plan=actions,
             resource_assessment=resources,

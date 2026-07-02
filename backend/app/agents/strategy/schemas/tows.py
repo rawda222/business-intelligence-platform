@@ -23,6 +23,7 @@ class TOWSStrategy(BaseModel):
     horizon: str
     estimated_effort: str
     estimated_impact: str
+    success_metric: str = ""
     priority_rank: int
     tags: List[str] = Field(default_factory=list)
     requires_manual_review: bool = False

@@ -71,6 +71,7 @@ def _build_strategies(
             horizon=s.get("horizon", "short_term"),
             estimated_effort=s.get("estimated_effort", "medium"),
             estimated_impact=s.get("estimated_impact", "medium"),
+            success_metric=s.get("success_metric", ""),
             priority_rank=i + 1,
             tags=s.get("tags", []),
             requires_manual_review=False,

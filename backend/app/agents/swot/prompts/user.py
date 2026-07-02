@@ -1,7 +1,9 @@
 """
 SWOT Agent v7 - User Prompt Builder
 ====================================
-Now ENFORCES that Gemini returns evidence_refs (real quotes per item).
+Enforces that Gemini returns evidence_refs (real quotes per item), and
+weights scoring by frequency/benchmark strength relative to other themes
+in the same dataset.
 """
 
 import json
@@ -78,6 +80,19 @@ RULES (MANDATORY):
    NEVER paraphrase. NEVER write empty arrays unless absolutely no review supports the item.
 
 5. Reasoning MUST be supported by the evidence_refs.
+
+6. Weight scoring by the data provided: higher `frequency` and stronger
+   `benchmark_summary` deltas should produce higher importance/impact/confidence.
+   Low frequency or "low"/"unavailable" benchmark_quality caps confidence at 0.6.
+
+7. Do not invent evidence_refs. If a theme is real but has weak review
+   support, lower its confidence rather than fabricating a quote.
+
+8. Before scoring any single theme, scan all themes provided and rank them
+   mentally by evidence strength (frequency + sentiment clarity + benchmark
+   support). Your final scores must reflect that relative ranking — the
+   single strongest theme in the dataset should visibly outscore the weakest
+   one you chose to include.
 
 STRICT JSON FORMAT:
 {{
