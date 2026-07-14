@@ -24,30 +24,42 @@ mongo_manager = MongoManager()
 # ============================================================
 async def connect_to_mongo():
     """Initialize MongoDB connection and Beanie ODM on app startup."""
-    # Import Beanie document models
-    from app.models.mongo.swot_report import SWOTReportDocument
+
+    from app.models.mongo.social_post import SocialPostDocument
     from app.models.mongo.strategy_report import StrategyReportDocument
-    
+    from app.models.mongo.swot_report import SWOTReportDocument
+
+    document_models = [
+        SWOTReportDocument,
+        StrategyReportDocument,
+        SocialPostDocument,
+    ]
+
     mongo_manager.client = AsyncIOMotorClient(
         settings.MONGO_URL,
         serverSelectionTimeoutMS=5000,
         maxPoolSize=10,
         minPoolSize=1,
     )
-    mongo_manager.database = mongo_manager.client[settings.MONGO_DB_NAME]
-    
-    # Initialize Beanie with document models
+
+    mongo_manager.database = mongo_manager.client[
+        settings.MONGO_DB_NAME
+    ]
+
     await init_beanie(
         database=mongo_manager.database,
-        document_models=[
-            SWOTReportDocument,
-            StrategyReportDocument,
-        ],
+        document_models=document_models,
     )
-    
-    print(f"[+] Connected to MongoDB: {settings.MONGO_DB_NAME}")
-    print(f"[+] Beanie initialized with 2 document models")
 
+    print(
+        f"[+] Connected to MongoDB: "
+        f"{settings.MONGO_DB_NAME}"
+    )
+
+    print(
+        f"[+] Beanie initialized with "
+        f"{len(document_models)} document models"
+    )
 
 async def close_mongo():
     """Close MongoDB connection."""
