@@ -1,40 +1,77 @@
 """
 Business Intelligence Platform - Main Application
-With Full Pipeline + CORS open for development
+
+Includes:
+- Full AI pipeline
+- Multi-tenant business management
+- Social-account management
+- Development CORS configuration
 """
+
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1 import (
+    analysis,
+    auth,
+    businesses,
+    full_pipeline,
+    reports,
+    social_accounts,
+    swot,
+)
 from app.core.config import settings
-from app.db.mongo import connect_to_mongo, close_mongo, check_mongo_health
-from app.db.redis_client import connect_to_redis, close_redis, check_redis_health
-from app.db.postgres import check_postgres_health, close_postgres
+from app.db.mongo import (
+    check_mongo_health,
+    close_mongo,
+    connect_to_mongo,
+)
+from app.db.postgres import (
+    check_postgres_health,
+    close_postgres,
+)
+from app.db.redis_client import (
+    check_redis_health,
+    close_redis,
+    connect_to_redis,
+)
 
-from app.api.v1 import auth, businesses, swot, analysis, full_pipeline, reports
 
-
+# ============================================================
+# Application Lifecycle
+# ============================================================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Initialize and close external application resources."""
+
     print("\n" + "=" * 60)
     print(f"  Starting {settings.APP_NAME}")
     print("=" * 60)
 
     await connect_to_mongo()
     await connect_to_redis()
+
     print("[+] All connections established\n")
 
     yield
 
     print("\n  Shutting down...")
+
     await close_mongo()
     await close_redis()
     await close_postgres()
 
 
+# ============================================================
+# FastAPI Application
+# ============================================================
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Multi-tenant AI-powered Business Intelligence Platform",
+    description=(
+        "Multi-tenant AI-powered Business Intelligence Platform"
+    ),
     version=settings.APP_VERSION,
     debug=settings.DEBUG,
     lifespan=lifespan,
@@ -42,7 +79,7 @@ app = FastAPI(
 
 
 # ============================================================
-# ✅ CORS Middleware - السماح لأي origin (development)
+# CORS Middleware - Development Configuration
 # ============================================================
 app.add_middleware(
     CORSMiddleware,
@@ -56,17 +93,51 @@ app.add_middleware(
 
 
 # ============================================================
-# Include Routers
+# API Routers
 # ============================================================
-app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
-app.include_router(businesses.router, prefix=settings.API_V1_PREFIX)
-app.include_router(swot.router, prefix=settings.API_V1_PREFIX)
-app.include_router(analysis.router, prefix=settings.API_V1_PREFIX)
-app.include_router(full_pipeline.router, prefix=settings.API_V1_PREFIX)
-app.include_router(reports.router, prefix=settings.API_V1_PREFIX)
+app.include_router(
+    auth.router,
+    prefix=settings.API_V1_PREFIX,
+)
 
+app.include_router(
+    businesses.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+app.include_router(
+    social_accounts.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+app.include_router(
+    swot.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+app.include_router(
+    analysis.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+app.include_router(
+    full_pipeline.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+app.include_router(
+    reports.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+
+# ============================================================
+# Root Endpoint
+# ============================================================
 @app.get("/")
 async def root():
+    """Return basic application information."""
+
     return {
         "message": f"Welcome to {settings.APP_NAME}",
         "status": "running",
@@ -76,8 +147,13 @@ async def root():
     }
 
 
+# ============================================================
+# Health Endpoints
+# ============================================================
 @app.get("/health")
 async def health_check():
+    """Basic application liveness check."""
+
     return {
         "status": "healthy",
         "service": "bi-platform-api",
@@ -87,18 +163,26 @@ async def health_check():
 
 @app.get("/health/deep")
 async def deep_health_check():
+    """Verify PostgreSQL, MongoDB, and Redis connectivity."""
+
     postgres_health = await check_postgres_health()
     mongo_health = await check_mongo_health()
     redis_health = await check_redis_health()
 
-    all_healthy = all([
-        postgres_health["status"] == "healthy",
-        mongo_health["status"] == "healthy",
-        redis_health["status"] == "healthy",
-    ])
+    all_healthy = all(
+        [
+            postgres_health["status"] == "healthy",
+            mongo_health["status"] == "healthy",
+            redis_health["status"] == "healthy",
+        ]
+    )
 
     return {
-        "status": "healthy" if all_healthy else "degraded",
+        "status": (
+            "healthy"
+            if all_healthy
+            else "degraded"
+        ),
         "service": "bi-platform-api",
         "environment": settings.ENVIRONMENT,
         "databases": {
@@ -109,8 +193,13 @@ async def deep_health_check():
     }
 
 
+# ============================================================
+# Application Information
+# ============================================================
 @app.get("/info")
 async def info():
+    """Return enabled application capabilities."""
+
     return {
         "name": settings.APP_NAME,
         "version": settings.APP_VERSION,
@@ -118,9 +207,13 @@ async def info():
         "features": [
             "JWT Authentication",
             "Business Management (CRUD)",
+            "Social Account Management",
             "AI-powered SWOT (Vertex AI Gemini)",
             "Strategy Agent (Vertex AI Gemini)",
-            "Full Pipeline (Normalize -> Themes -> SWOT -> Strategy)",
+            (
+                "Full Pipeline "
+                "(Normalize -> Themes -> SWOT -> Strategy)"
+            ),
             "MongoDB Reports Storage",
         ],
     }
