@@ -120,6 +120,7 @@ def metric_values(
 
     return (
         metrics.likes,
+        metrics.reactions,
         metrics.comments,
         metrics.shares,
         metrics.saves,
@@ -288,6 +289,7 @@ async def update_post_latest_metrics(
 
     post.latest_metrics = SocialPostMetrics(
         likes=metrics.likes,
+        reactions=metrics.reactions,
         comments=metrics.comments,
         shares=metrics.shares,
         saves=metrics.saves,
@@ -361,6 +363,7 @@ async def record_metric_snapshot(
     if existing_at_time is not None:
         existing_at_time.metrics = SocialPostMetrics(
             likes=metrics.likes,
+            reactions=metrics.reactions,
             comments=metrics.comments,
             shares=metrics.shares,
             saves=metrics.saves,
@@ -448,6 +451,7 @@ async def record_metric_snapshot(
         platform_post_id=post.platform_post_id,
         metrics=SocialPostMetrics(
             likes=metrics.likes,
+            reactions=metrics.reactions,
             comments=metrics.comments,
             shares=metrics.shares,
             saves=metrics.saves,

@@ -35,6 +35,15 @@ class SocialPostMetrics(BaseModel):
         ge=0,
     )
 
+    reactions: int | None = Field(
+        default=None,
+        ge=0,
+        description=(
+            "Total combined reactions reported by platforms "
+            "such as Facebook."
+        ),
+    )
+
     comments: int | None = Field(
         default=None,
         ge=0,
