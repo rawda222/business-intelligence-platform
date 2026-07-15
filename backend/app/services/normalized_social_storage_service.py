@@ -461,3 +461,158 @@ async def store_normalized_social_post(
         post_created=post_created,
         post_updated=post_updated,
     )
+# ============================================================
+# Batch Storage Result
+# ============================================================
+@dataclass(slots=True)
+class NormalizedSocialBatchStorageResult:
+    """
+    Summary returned after storing normalized social posts.
+
+    posts_received:
+        Number of normalized posts supplied to the batch.
+
+    posts_succeeded:
+        Number of posts stored without an exception.
+
+    posts_created:
+        Number of new MongoDB social-post documents.
+
+    posts_updated:
+        Number of existing MongoDB posts whose content changed.
+
+    snapshots_created:
+        Number of new historical metric snapshots.
+
+    snapshots_skipped:
+        Number of metric observations skipped by snapshot policy.
+
+    snapshots_updated_existing:
+        Number of snapshots updated at an identical captured_at.
+
+    failures:
+        Minimal diagnostic records for posts that failed.
+
+    results:
+        Successful per-post storage results.
+    """
+
+    posts_received: int
+
+    posts_succeeded: int
+
+    posts_created: int
+
+    posts_updated: int
+
+    snapshots_created: int
+
+    snapshots_skipped: int
+
+    snapshots_updated_existing: int
+
+    failures: list[dict[str, str]]
+
+    results: list[NormalizedSocialPostStorageResult]
+
+
+# ============================================================
+# Batch Normalized Post Storage
+# ============================================================
+async def store_normalized_social_posts(
+    normalized_posts: list[NormalizedSocialPost],
+    *,
+    collection_run_id: UUID | None = None,
+    continue_on_error: bool = True,
+) -> NormalizedSocialBatchStorageResult:
+    """
+    Store multiple normalized social posts in one collection run.
+
+    Each post is processed through store_normalized_social_post(),
+    so create, update, tenant isolation, and metric-snapshot rules
+    remain centralized.
+
+    When continue_on_error is True:
+        One failed post is recorded in failures and processing
+        continues for the remaining posts.
+
+    When continue_on_error is False:
+        The first exception is raised immediately.
+
+    The failure summary contains only minimal traceability data.
+    Complete payloads and author information are not copied into
+    diagnostic output.
+    """
+
+    successful_results: list[
+        NormalizedSocialPostStorageResult
+    ] = []
+
+    failures: list[dict[str, str]] = []
+
+    posts_created = 0
+    posts_updated = 0
+
+    snapshots_created = 0
+    snapshots_skipped = 0
+    snapshots_updated_existing = 0
+
+    for normalized_post in normalized_posts:
+        try:
+            result = await store_normalized_social_post(
+                normalized_post,
+                collection_run_id=collection_run_id,
+            )
+        except Exception as error:
+            if not continue_on_error:
+                raise
+
+            failures.append(
+                {
+                    "platform": (
+                        normalized_post.platform
+                    ),
+                    "platform_post_id": (
+                        normalized_post.platform_post_id
+                    ),
+                    "error_type": (
+                        type(error).__name__
+                    ),
+                    "error_message": str(error),
+                }
+            )
+
+            continue
+
+        successful_results.append(
+            result
+        )
+
+        if result.post_created:
+            posts_created += 1
+
+        if result.post_updated:
+            posts_updated += 1
+
+        if result.snapshot.created:
+            snapshots_created += 1
+
+        if result.snapshot.skipped:
+            snapshots_skipped += 1
+
+        if result.snapshot.updated_existing:
+            snapshots_updated_existing += 1
+
+    return NormalizedSocialBatchStorageResult(
+        posts_received=len(normalized_posts),
+        posts_succeeded=len(successful_results),
+        posts_created=posts_created,
+        posts_updated=posts_updated,
+        snapshots_created=snapshots_created,
+        snapshots_skipped=snapshots_skipped,
+        snapshots_updated_existing=(
+            snapshots_updated_existing
+        ),
+        failures=failures,
+        results=successful_results,
+    )
