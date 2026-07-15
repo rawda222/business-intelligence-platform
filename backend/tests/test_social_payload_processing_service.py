@@ -32,19 +32,22 @@ from tests.test_facebook_normalizer import (
 from tests.test_instagram_normalizer import (
     build_instagram_payload,
 )
+from app.models.mongo.social_comment import (
+    SocialCommentDocument,
+)
 
 
 async def delete_processing_test_posts(
     post_ids,
 ) -> None:
-    """
-    Delete temporary metric snapshots and social posts.
-
-    Cleanup uses persisted post IDs returned by the processing
-    workflow rather than broad tenant-level deletion.
-    """
+    """Clean comments, snapshots, and posts."""
 
     for post_id in post_ids:
+        await SocialCommentDocument.find(
+            SocialCommentDocument.social_post_id
+            == post_id
+        ).delete()
+
         await PostMetricSnapshotDocument.find(
             PostMetricSnapshotDocument.social_post_id
             == post_id
@@ -96,7 +99,25 @@ async def test_facebook_raw_payload_is_normalized_and_stored():
         assert result.comments_normalized == 2
 
         # Comment persistence has not been introduced yet.
-        assert result.comments_persisted == 0
+        assert result.comments_persisted == 2
+
+        assert (
+            result.comment_storage.comments_received
+            == 2
+        )
+
+        assert (
+            result.comment_storage.comments_succeeded
+            == 2
+        )
+
+        assert (
+            result.comment_storage.comments_created
+            + result.comment_storage.comments_unchanged
+            == 2
+        )
+
+        assert result.comment_storage.failures == []
 
         assert result.storage.posts_received == 1
         assert result.storage.posts_succeeded == 1
@@ -263,7 +284,25 @@ async def test_instagram_raw_payload_is_normalized_and_stored():
 
         assert result.posts_normalized == 2
         assert result.comments_normalized == 2
-        assert result.comments_persisted == 0
+        assert result.comments_persisted == 2
+
+        assert (
+            result.comment_storage.comments_received
+            == 2
+        )
+
+        assert (
+            result.comment_storage.comments_succeeded
+            == 2
+        )
+
+        assert (
+            result.comment_storage.comments_created
+            + result.comment_storage.comments_unchanged
+            == 2
+        )
+
+        assert result.comment_storage.failures == []
 
         assert result.storage.posts_received == 2
         assert result.storage.posts_succeeded == 2
@@ -433,6 +472,18 @@ async def test_payload_without_valid_posts_returns_empty_result(
     assert result.posts_normalized == 0
     assert result.comments_normalized == 0
     assert result.comments_persisted == 0
+    assert (
+        result.comment_storage.comments_received
+        == 0
+    )
+
+    assert (
+        result.comment_storage.comments_succeeded
+        == 0
+    )
+
+    assert result.comment_storage.failures == []
+    assert result.comment_storage.results == []
 
     assert result.storage.posts_received == 0
     assert result.storage.posts_succeeded == 0

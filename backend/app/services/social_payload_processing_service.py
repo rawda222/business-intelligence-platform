@@ -2,14 +2,14 @@
 Social Payload Processing Service
 
 Coordinates platform-specific normalization with normalized social
-post batch storage.
+post batch storage and normalized social comment batch storage.
 
 Current behavior:
 
-- Facebook raw payloads are normalized and their posts are stored.
-- Instagram raw payloads are normalized and their posts are stored.
-- Normalized comments are returned to the caller but are not yet
-  persisted because SocialCommentDocument has not been introduced.
+- Facebook raw payloads are normalized. Posts and comments are
+  persisted to MongoDB.
+- Instagram raw payloads are normalized. Posts and comments are
+  persisted to MongoDB.
 - Storage failures follow the batch continue_on_error policy.
 """
 
@@ -32,6 +32,10 @@ from app.services.normalized_social_storage_service import (
     NormalizedSocialBatchStorageResult,
     store_normalized_social_posts,
 )
+from app.services.social_comment_storage_service import (
+    SocialCommentBatchStorageResult,
+    store_normalized_social_comments,
+)
 
 
 # ============================================================
@@ -51,11 +55,11 @@ class SocialPayloadProcessingResult:
     normalized_comments:
         Valid comments produced by the platform normalizer.
 
-        Comments are returned for later analysis or persistence.
-        They are not yet stored in MongoDB.
-
     storage:
         Batch storage summary for normalized posts.
+
+    comment_storage:
+        Batch storage summary for normalized comments.
     """
 
     platform: Literal[
@@ -72,6 +76,8 @@ class SocialPayloadProcessingResult:
     ]
 
     storage: NormalizedSocialBatchStorageResult
+
+    comment_storage: SocialCommentBatchStorageResult
 
     @property
     def posts_normalized(self) -> int:
@@ -92,12 +98,17 @@ class SocialPayloadProcessingResult:
     @property
     def comments_persisted(self) -> int:
         """
-        Return persisted comment count.
+        Return the number of comments successfully persisted.
 
-        Comment persistence is intentionally not implemented yet.
+        This includes newly created, updated, and unchanged existing
+        comments because each successful result resolves to a
+        persisted MongoDB comment document.
         """
 
-        return 0
+        return (
+            self.comment_storage
+            .comments_succeeded
+        )
 
 
 # ============================================================
@@ -116,9 +127,8 @@ async def process_facebook_payload(
     Normalize and store one complete Facebook collector payload.
 
     Invalid Facebook post records are skipped by the normalizer.
-    Valid normalized posts are sent through normalized batch storage.
-
-    Normalized comments are returned but not persisted.
+    Valid normalized posts and comments are persisted through their
+    respective batch storage services.
     """
 
     normalized_posts, normalized_comments = (
@@ -138,11 +148,19 @@ async def process_facebook_payload(
         )
     )
 
+    comment_storage_result = (
+        await store_normalized_social_comments(
+            normalized_comments,
+            continue_on_error=continue_on_error,
+        )
+    )
+
     return SocialPayloadProcessingResult(
         platform="facebook",
         normalized_posts=normalized_posts,
         normalized_comments=normalized_comments,
         storage=storage_result,
+        comment_storage=comment_storage_result,
     )
 
 
@@ -165,7 +183,8 @@ async def process_instagram_payload(
     An explicit collected_at has priority over profile.scraped_at,
     following the Instagram normalizer policy.
 
-    Normalized comments are returned but not persisted.
+    Valid normalized posts and comments are persisted through their
+    respective batch storage services.
     """
 
     normalized_posts, normalized_comments = (
@@ -186,9 +205,17 @@ async def process_instagram_payload(
         )
     )
 
+    comment_storage_result = (
+        await store_normalized_social_comments(
+            normalized_comments,
+            continue_on_error=continue_on_error,
+        )
+    )
+
     return SocialPayloadProcessingResult(
         platform="instagram",
         normalized_posts=normalized_posts,
         normalized_comments=normalized_comments,
         storage=storage_result,
+        comment_storage=comment_storage_result,
     )
