@@ -9,18 +9,6 @@ from motor.motor_asyncio import (
     AsyncIOMotorClient,
     AsyncIOMotorDatabase,
 )
-from app.models.mongo.post_metric_snapshot import (
-        PostMetricSnapshotDocument,
-    )
-from app.models.mongo.social_comment import (
-        SocialCommentDocument,
-    )
-from app.models.mongo.social_post import SocialPostDocument
-from app.models.mongo.strategy_report import (
-        StrategyReportDocument,
-    )
-from app.models.mongo.swot_report import SWOTReportDocument
-
 
 from app.core.config import settings
 
@@ -45,20 +33,31 @@ mongo_manager = MongoManager()
 async def connect_to_mongo():
     """Initialize MongoDB and all registered Beanie models."""
 
+    from app.models.mongo.customer_review import (
+        CustomerReviewDocument,
+    )
     from app.models.mongo.post_metric_snapshot import (
         PostMetricSnapshotDocument,
     )
-    from app.models.mongo.social_post import SocialPostDocument
+    from app.models.mongo.social_comment import (
+        SocialCommentDocument,
+    )
+    from app.models.mongo.social_post import (
+        SocialPostDocument,
+    )
     from app.models.mongo.strategy_report import (
         StrategyReportDocument,
     )
-    from app.models.mongo.swot_report import SWOTReportDocument
+    from app.models.mongo.swot_report import (
+        SWOTReportDocument,
+    )
 
     document_models = [
         SWOTReportDocument,
         StrategyReportDocument,
         SocialPostDocument,
         SocialCommentDocument,
+        CustomerReviewDocument,
         PostMetricSnapshotDocument,
     ]
 
