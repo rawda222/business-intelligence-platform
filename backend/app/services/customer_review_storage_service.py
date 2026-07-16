@@ -553,3 +553,105 @@ async def store_normalized_customer_review(
             "customer_review_created"
         ),
     )
+# ============================================================
+# Batch Storage Result
+# ============================================================
+@dataclass(slots=True)
+class CustomerReviewBatchStorageResult:
+    """
+    Summary returned after storing normalized customer reviews.
+    """
+
+    reviews_received: int
+
+    reviews_succeeded: int
+
+    reviews_created: int
+
+    reviews_updated: int
+
+    reviews_unchanged: int
+
+    failures: list[dict[str, str]]
+
+    results: list[
+        CustomerReviewStorageResult
+    ]
+
+
+# ============================================================
+# Batch Customer Review Storage
+# ============================================================
+async def store_normalized_customer_reviews(
+    reviews: list[NormalizedCustomerReview],
+    *,
+    continue_on_error: bool = True,
+) -> CustomerReviewBatchStorageResult:
+    """
+    Store multiple normalized customer reviews.
+
+    When continue_on_error is True, one failed review is recorded
+    and processing continues for the remaining reviews.
+
+    When continue_on_error is False, the first exception is raised.
+    """
+
+    successful_results: list[
+        CustomerReviewStorageResult
+    ] = []
+
+    failures: list[dict[str, str]] = []
+
+    reviews_created = 0
+    reviews_updated = 0
+    reviews_unchanged = 0
+
+    for review in reviews:
+        try:
+            result = (
+                await store_normalized_customer_review(
+                    review
+                )
+            )
+        except Exception as error:
+            if not continue_on_error:
+                raise
+
+            failures.append(
+                {
+                    "source": review.source,
+                    "source_review_id": (
+                        review.source_review_id
+                        or ""
+                    ),
+                    "error_type": (
+                        type(error).__name__
+                    ),
+                    "error_message": str(error),
+                }
+            )
+
+            continue
+
+        successful_results.append(
+            result
+        )
+
+        if result.created:
+            reviews_created += 1
+        elif result.updated:
+            reviews_updated += 1
+        else:
+            reviews_unchanged += 1
+
+    return CustomerReviewBatchStorageResult(
+        reviews_received=len(reviews),
+        reviews_succeeded=len(
+            successful_results
+        ),
+        reviews_created=reviews_created,
+        reviews_updated=reviews_updated,
+        reviews_unchanged=reviews_unchanged,
+        failures=failures,
+        results=successful_results,
+    )
