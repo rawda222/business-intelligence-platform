@@ -433,3 +433,123 @@ async def update_customer_review_safely(
     await stored_review.save()
 
     return True
+# ============================================================
+# Storage Result and Complete Workflow
+# ============================================================
+from dataclasses import dataclass
+
+
+@dataclass(slots=True)
+class CustomerReviewStorageResult:
+    """
+    Result returned after storing one normalized customer review.
+
+    review:
+        The persisted MongoDB customer-review document.
+
+    created:
+        True when a new review document was inserted.
+
+    updated:
+        True when an existing review was safely updated.
+
+    reason:
+        Machine-readable storage outcome.
+    """
+
+    review: CustomerReviewDocument
+
+    created: bool
+
+    updated: bool
+
+    reason: str
+
+
+async def store_normalized_customer_review(
+    review: NormalizedCustomerReview,
+) -> CustomerReviewStorageResult:
+    """
+    Store one normalized customer review idempotently.
+
+    Workflow:
+
+    1. Build the deterministic deduplication key.
+    2. Look up an existing review inside the same tenant and source.
+    3. Safely update the existing review when mutable fields change.
+    4. Return the existing review when nothing changed.
+    5. Create a new review when no matching identity exists.
+    """
+
+    deduplication_key = (
+        build_customer_review_deduplication_key(
+            review
+        )
+    )
+
+    existing_review = (
+        await find_existing_customer_review(
+            review=review,
+            deduplication_key=deduplication_key,
+        )
+    )
+
+    if existing_review is not None:
+        updated = await update_customer_review_safely(
+            stored_review=existing_review,
+            incoming_review=review,
+        )
+
+        if not updated:
+            return CustomerReviewStorageResult(
+                review=existing_review,
+                created=False,
+                updated=False,
+                reason=(
+                    "customer_review_"
+                    "already_exists"
+                ),
+            )
+
+        if existing_review.id is None:
+            raise RuntimeError(
+                "Updated customer review has no "
+                "persisted document ID."
+            )
+
+        refreshed_review = (
+            await CustomerReviewDocument.get(
+                existing_review.id
+            )
+        )
+
+        if refreshed_review is None:
+            raise RuntimeError(
+                "Updated customer review could "
+                "not be reloaded."
+            )
+
+        return CustomerReviewStorageResult(
+            review=refreshed_review,
+            created=False,
+            updated=True,
+            reason=(
+                "customer_review_updated"
+            ),
+        )
+
+    created_review = (
+        await create_customer_review(
+            review=review,
+            deduplication_key=deduplication_key,
+        )
+    )
+
+    return CustomerReviewStorageResult(
+        review=created_review,
+        created=True,
+        updated=False,
+        reason=(
+            "customer_review_created"
+        ),
+    )
