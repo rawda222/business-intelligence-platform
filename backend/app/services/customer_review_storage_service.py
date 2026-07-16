@@ -17,6 +17,8 @@ independently from MongoDB.
 import hashlib
 import json
 
+from datetime import UTC, datetime
+
 from app.schemas.normalized_social import (
     NormalizedCustomerReview,
 )
@@ -149,3 +151,98 @@ async def find_existing_customer_review(
         CustomerReviewDocument.deduplication_key
         == deduplication_key,
     )
+
+# ============================================================
+# Storage Errors
+# ============================================================
+class CustomerReviewAlreadyExistsError(
+    ValueError
+):
+    """
+    Raised when a duplicate customer review is rejected.
+
+    The unique MongoDB index on business_id + source +
+    deduplication_key protects against inserting the same review
+    twice. The service raises this error when Beanie or MongoDB
+    rejects the insert with a DuplicateKeyError.
+    """
+
+
+# ============================================================
+# Create Customer Review
+# ============================================================
+async def create_customer_review(
+    *,
+    review: NormalizedCustomerReview,
+    deduplication_key: str,
+) -> CustomerReviewDocument:
+    """
+    Create one MongoDB customer-review document.
+
+    The deduplication key must already be resolved by the caller.
+
+    The unique index on business_id + source + deduplication_key
+    guarantees that duplicates cannot be inserted twice. When the
+    database rejects the second insert, the service raises
+    CustomerReviewAlreadyExistsError.
+    """
+
+    from pymongo.errors import DuplicateKeyError
+
+    now = datetime.now(
+        UTC,
+    )
+
+    normalized_published_at = (
+        ensure_utc(
+            review.published_at
+        )
+        if review.published_at is not None
+        else None
+    )
+
+    normalized_source_review_id = (
+        review.source_review_id.strip()
+        if (
+            review.source_review_id is not None
+            and review.source_review_id.strip()
+        )
+        else None
+    )
+
+    stored_review = CustomerReviewDocument(
+        business_id=review.business_id,
+        source=review.source,
+        source_review_id=(
+            normalized_source_review_id
+        ),
+        deduplication_key=deduplication_key,
+        text=review.text,
+        language=review.language,
+        rating=review.rating,
+        published_at=normalized_published_at,
+        collected_at=ensure_utc(
+            review.collected_at
+        ),
+        information_quality=(
+            review.information_quality
+        ),
+        is_meaningful=review.is_meaningful,
+        is_emoji_only=review.is_emoji_only,
+        raw_data=dict(
+            review.raw_data
+        ),
+        created_at=now,
+        updated_at=now,
+    )
+
+    try:
+        await stored_review.insert()
+    except DuplicateKeyError as error:
+        raise CustomerReviewAlreadyExistsError(
+            "Customer review already exists "
+            "inside this tenant, source, and "
+            "deduplication key."
+        ) from error
+
+    return stored_review
