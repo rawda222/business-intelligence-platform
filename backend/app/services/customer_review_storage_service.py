@@ -23,6 +23,9 @@ from app.schemas.normalized_social import (
 from app.services.post_metric_service import (
     ensure_utc,
 )
+from app.models.mongo.customer_review import (
+    CustomerReviewDocument,
+)
 
 
 # ============================================================
@@ -114,3 +117,35 @@ def build_customer_review_deduplication_key(
     ).hexdigest()
 
     return f"sha256:{digest}"
+
+# ============================================================
+# Existing Review Lookup
+# ============================================================
+async def find_existing_customer_review(
+    *,
+    review: NormalizedCustomerReview,
+    deduplication_key: str,
+) -> "CustomerReviewDocument | None":
+    """
+    Find an existing customer review inside the exact tenant scope.
+
+    The lookup matches the fields protected by the unique MongoDB
+    index:
+
+    - business_id
+    - source
+    - deduplication_key
+
+    Never search by external review_id alone. Two different
+    businesses may collect reviews with identical external IDs from
+    different sources.
+    """
+
+    return await CustomerReviewDocument.find_one(
+        CustomerReviewDocument.business_id
+        == review.business_id,
+        CustomerReviewDocument.source
+        == review.source,
+        CustomerReviewDocument.deduplication_key
+        == deduplication_key,
+    )
