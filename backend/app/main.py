@@ -12,6 +12,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.v1 import trends
 
 from app.api.v1 import (
     analysis,
@@ -130,6 +131,10 @@ app.include_router(
     prefix=settings.API_V1_PREFIX,
 )
 
+app.include_router(
+    trends.router,
+    prefix=settings.API_V1_PREFIX,
+)
 
 # ============================================================
 # Root Endpoint
