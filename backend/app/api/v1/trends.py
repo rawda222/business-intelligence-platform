@@ -38,6 +38,12 @@ from app.services.review_trend_service import (
 from app.services.trend_foundation_service import (
     get_business_trend_foundation_stats,
 )
+from app.services.business_trend_report_service import (
+    build_business_trend_report,
+)
+from app.services.trend_insight_service import (
+    build_trend_insights,
+)
 
 
 router = APIRouter(
@@ -431,5 +437,110 @@ async def read_reviews_per_month_trend(
                 ),
             }
             for bucket in trend.buckets
+        ],
+    }
+# ============================================================
+# GET /businesses/{business_id}/trends/insights
+# ============================================================
+@router.get(
+    (
+        "/{business_id}/trends/insights"
+    ),
+    summary=(
+        "Get deterministic trend insights"
+    ),
+)
+async def read_business_trend_insights(
+    business_id: UUID,
+    range_start: datetime = Query(
+        ...,
+        description=(
+            "Inclusive lower bound of the "
+            "analysis range, UTC."
+        ),
+    ),
+    range_end: datetime = Query(
+        ...,
+        description=(
+            "Exclusive upper bound of the "
+            "analysis range, UTC."
+        ),
+    ),
+    review_source: str = Query(
+        "google_maps",
+        description=(
+            "Customer voice source for the "
+            "reviews trend."
+        ),
+    ),
+    max_engagement_curves: int = Query(
+        5,
+        ge=0,
+        le=20,
+        description=(
+            "Maximum number of engagement "
+            "curves used inside the report."
+        ),
+    ),
+    current_user: User = Depends(
+        get_current_user,
+    ),
+    db: AsyncSession = Depends(
+        get_db,
+    ),
+) -> dict[str, Any]:
+    """Return deterministic trend insights for one business."""
+
+    await _require_business_ownership(
+        db=db,
+        business_id=business_id,
+        owner_id=current_user.id,
+    )
+
+    try:
+        report = await (
+            build_business_trend_report(
+                business_id=business_id,
+                range_start=range_start,
+                range_end=range_end,
+                review_source=review_source,
+                max_engagement_curves=(
+                    max_engagement_curves
+                ),
+            )
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=(
+                status.HTTP_400_BAD_REQUEST
+            ),
+            detail=str(error),
+        ) from error
+
+    insights = build_trend_insights(
+        report=report,
+    )
+
+    return {
+        "business_id": str(
+            report.business_id,
+        ),
+        "range_start": (
+            report.range_start.isoformat()
+        ),
+        "range_end": (
+            report.range_end.isoformat()
+        ),
+        "review_source": (
+            report.review_source
+        ),
+        "insights": [
+            {
+                "code": insight.code,
+                "severity": insight.severity,
+                "message": insight.message,
+                "evidence": insight.evidence,
+            }
+            for insight in insights
         ],
     }
