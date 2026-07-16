@@ -246,3 +246,190 @@ async def create_customer_review(
         ) from error
 
     return stored_review
+
+# ============================================================
+# Safe Customer Review Update
+# ============================================================
+async def update_customer_review_safely(
+    *,
+    stored_review: CustomerReviewDocument,
+    incoming_review: NormalizedCustomerReview,
+) -> bool:
+    """
+    Safely update mutable customer-review fields.
+
+    Update policy:
+
+    - Non-None scalar values may update stored values.
+    - None does not erase useful stored information.
+    - Zero and empty strings from incoming data are treated as
+      missing information and do not overwrite stored fields.
+    - raw_data values are merged without removing keys.
+    - Identity fields are never modified:
+      - business_id
+      - source
+      - source_review_id
+      - deduplication_key
+
+    Returns:
+        True when at least one persisted field changed.
+        False when the incoming observation is identical.
+    """
+
+    changed = False
+
+    # ========================================================
+    # Review Text
+    # ========================================================
+    incoming_text = incoming_review.text
+
+    if (
+        incoming_text
+        and stored_review.text != incoming_text
+    ):
+        stored_review.text = incoming_text
+
+        changed = True
+
+    # ========================================================
+    # Language
+    # ========================================================
+    incoming_language = incoming_review.language
+
+    if (
+        incoming_language
+        and stored_review.language
+        != incoming_language
+    ):
+        stored_review.language = (
+            incoming_language
+        )
+
+        changed = True
+
+    # ========================================================
+    # Rating
+    # ========================================================
+    incoming_rating = incoming_review.rating
+
+    if (
+        incoming_rating is not None
+        and stored_review.rating
+        != incoming_rating
+    ):
+        stored_review.rating = incoming_rating
+
+        changed = True
+
+    # ========================================================
+    # Publication Time
+    # ========================================================
+    incoming_published_at = (
+        ensure_utc(
+            incoming_review.published_at
+        )
+        if incoming_review.published_at
+        is not None
+        else None
+    )
+
+    stored_published_at = (
+        ensure_utc(
+            stored_review.published_at
+        )
+        if stored_review.published_at
+        is not None
+        else None
+    )
+
+    if (
+        incoming_published_at is not None
+        and stored_published_at
+        != incoming_published_at
+    ):
+        stored_review.published_at = (
+            incoming_published_at
+        )
+
+        changed = True
+
+    # ========================================================
+    # Information Quality
+    # ========================================================
+    if (
+        stored_review.information_quality
+        != incoming_review.information_quality
+    ):
+        stored_review.information_quality = (
+            incoming_review.information_quality
+        )
+
+        changed = True
+
+    # ========================================================
+    # Meaningfulness
+    # ========================================================
+    if (
+        stored_review.is_meaningful
+        != incoming_review.is_meaningful
+    ):
+        stored_review.is_meaningful = (
+            incoming_review.is_meaningful
+        )
+
+        changed = True
+
+    if (
+        stored_review.is_emoji_only
+        != incoming_review.is_emoji_only
+    ):
+        stored_review.is_emoji_only = (
+            incoming_review.is_emoji_only
+        )
+
+        changed = True
+
+    # ========================================================
+    # Minimized Raw Data Merge
+    # ========================================================
+    stored_raw_data = dict(
+        stored_review.raw_data
+        or {}
+    )
+
+    merged_raw_data = dict(
+        stored_raw_data
+    )
+
+    for key, value in (
+        incoming_review.raw_data.items()
+    ):
+        if value is None:
+            continue
+
+        merged_raw_data[key] = value
+
+    if merged_raw_data != stored_raw_data:
+        stored_review.raw_data = (
+            merged_raw_data
+        )
+
+        changed = True
+
+    # ========================================================
+    # Persist Only When Necessary
+    # ========================================================
+    if not changed:
+        return False
+
+    stored_review.updated_at = datetime.now(
+        UTC,
+    )
+
+    stored_review.collected_at = ensure_utc(
+        incoming_review.collected_at
+    )
+
+    await stored_review.save()
+
+    return True
