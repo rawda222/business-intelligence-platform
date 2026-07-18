@@ -1,0 +1,570 @@
+{
+  "automatic_context": {
+    "campaign_date": {
+      "confidence": 1.0,
+      "source": "business_timezone_current_date",
+      "value": "2026-07-18"
+    },
+    "content_format": {
+      "confidence": 0.6,
+      "source": "platform_default_policy",
+      "value": "feed_post"
+    },
+    "evidence_references": [],
+    "objective": {
+      "confidence": 0.6,
+      "source": "default_policy",
+      "value": "awareness"
+    },
+    "platform": {
+      "confidence": 0.75,
+      "source": "connected_platform_policy",
+      "value": "instagram"
+    },
+    "product_context": {
+      "confidence": 0.6,
+      "source": "business_industry_fallback",
+      "value": "cafe"
+    },
+    "request": {
+      "campaign_date": "2026-07-18",
+      "content_format": "feed_post",
+      "moment_override": null,
+      "objective": "awareness",
+      "platform": "instagram",
+      "product_context": "cafe",
+      "selection_mode": "automatic",
+      "target_country_code": "SA"
+    },
+    "target_country_code": {
+      "confidence": 1.0,
+      "source": "business_profile",
+      "value": "SA"
+    },
+    "warnings": []
+  },
+  "social_platform_context": {
+    "platforms": [
+      "instagram"
+    ],
+    "usable_account_ids": [
+      "cccccccc-cccc-cccc-cccc-cccccccccccc"
+    ],
+    "warnings": []
+  },
+  "theme_result": {
+    "business_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+    "contract_version": "1.0",
+    "fallback": {
+      "allowed": true,
+      "reason": "Brand-only styling remains available as a safe fallback.",
+      "theme_key": "brand_only"
+    },
+    "generated_at": "2026-07-18T09:00:00Z",
+    "primary_theme": {
+      "business_fit": "high",
+      "campaign_date": "2026-07-18",
+      "confidence": 0.955,
+      "constraints": {
+        "avoid_elements": [
+          "generic tropical clichés",
+          "competitor branding",
+          "unsupported product claims"
+        ],
+        "brand_rules": [
+          "Preserve brand colors",
+          "Keep packaging recognizable"
+        ],
+        "market_rules": [
+          "Use styling appropriate for the target country SA."
+        ]
+      },
+      "content_format": "feed_post",
+      "creative_direction": {
+        "composition_hint": null,
+        "concept": "Summer creative direction for cafe",
+        "lighting_hint": null,
+        "mood_keywords": [
+          "bright",
+          "fresh",
+          "light",
+          "refreshing"
+        ],
+        "palette_hints": [],
+        "visual_tokens": [
+          "bright",
+          "fresh",
+          "light",
+          "refreshing"
+        ]
+      },
+      "display_name": "Summer",
+      "evidence_references": [
+        "country-profile:SA:1",
+        "moment-definition:summer:1",
+        "country-profile:SA:1",
+        "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+      ],
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "moment_type": "season",
+      "objective": "awareness",
+      "platform": "instagram",
+      "reasons": [
+        "The campaign date is inside the active moment window.",
+        "The target country is inside the configured moment scope.",
+        "The moment has high fit for the business type.",
+        "The campaign objective is supported by the moment."
+      ],
+      "source_moment": "summer",
+      "status": "active",
+      "target_country_code": "SA",
+      "theme_key": "summer",
+      "valid_from": "2026-06-01",
+      "valid_until": "2026-08-31"
+    },
+    "registry_version": "countries:1.0;moments:1.0;overrides:1.0",
+    "rejected_moments": [
+      {
+        "business_fit": "medium",
+        "display_name": "Autumn",
+        "key": "autumn",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "medium",
+        "display_name": "Back to School",
+        "key": "back_to_school",
+        "reason": "Country-specific moment 'back_to_school' requires a country/year override.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "medium",
+        "display_name": "Black Friday",
+        "key": "black_friday",
+        "reason": "Country-specific moment 'black_friday' requires a country/year override.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Eid Al-Adha",
+        "key": "eid_al_adha",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Eid Al-Fitr",
+        "key": "eid_al_fitr",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "medium",
+        "display_name": "Graduation",
+        "key": "graduation",
+        "reason": "Country-specific moment 'graduation' requires a country/year override.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Mother's Day",
+        "key": "mother_day",
+        "reason": "Country-specific moment 'mother_day' requires a country/year override.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "New Year",
+        "key": "new_year",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Ramadan",
+        "key": "ramadan",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Saudi National Day",
+        "key": "saudi_national_day",
+        "reason": "Country-specific moment 'saudi_national_day' requires a country/year override.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "medium",
+        "display_name": "Spring",
+        "key": "spring",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "UAE National Day",
+        "key": "uae_national_day",
+        "reason": "The target country is outside the configured moment scope.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Valentine's",
+        "key": "valentines",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "medium",
+        "display_name": "White Friday",
+        "key": "white_friday",
+        "reason": "Country-specific moment 'white_friday' requires a country/year override.",
+        "status": "inactive"
+      },
+      {
+        "business_fit": "high",
+        "display_name": "Winter",
+        "key": "winter",
+        "reason": "The moment is not active or upcoming for the campaign date.",
+        "status": "inactive"
+      }
+    ],
+    "request": {
+      "campaign_date": "2026-07-18",
+      "content_format": "feed_post",
+      "moment_override": null,
+      "objective": "awareness",
+      "platform": "instagram",
+      "product_context": "cafe",
+      "selection_mode": "automatic",
+      "target_country_code": "SA"
+    },
+    "resolution_id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+    "resolved_moments": [
+      {
+        "active_from": "2026-06-01",
+        "active_until": "2026-08-31",
+        "avoid_elements": [
+          "generic tropical clichés"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Summer",
+        "eligible": true,
+        "evidence_references": [
+          "country-profile:SA:1",
+          "moment-definition:summer:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "summer",
+        "moment_type": "season",
+        "priority": 70,
+        "reasons": [
+          "The campaign date is inside the active moment window.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.955,
+        "status": "active",
+        "visual_tokens": [
+          "bright",
+          "fresh",
+          "light",
+          "refreshing"
+        ]
+      },
+      {
+        "active_from": "2026-02-18",
+        "active_until": "2026-03-19",
+        "avoid_elements": [
+          "unverified religious claims",
+          "excessive stereotypical symbols"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Ramadan",
+        "eligible": false,
+        "evidence_references": [
+          "moment:ramadan:1",
+          "moment-definition:ramadan:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "ramadan",
+        "moment_type": "religious",
+        "priority": 95,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "warm",
+          "evening",
+          "hospitality",
+          "gathering"
+        ]
+      },
+      {
+        "active_from": "2026-05-27",
+        "active_until": "2026-05-30",
+        "avoid_elements": [
+          "graphic imagery",
+          "unverified religious claims"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Eid Al-Adha",
+        "eligible": false,
+        "evidence_references": [
+          "moment:eid_al_adha:1",
+          "moment-definition:eid_al_adha:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "eid_al_adha",
+        "moment_type": "religious",
+        "priority": 90,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "celebratory",
+          "generous",
+          "warm",
+          "gathering"
+        ]
+      },
+      {
+        "active_from": "2026-03-20",
+        "active_until": "2026-03-22",
+        "avoid_elements": [
+          "unverified religious claims",
+          "generic cultural stereotypes"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Eid Al-Fitr",
+        "eligible": false,
+        "evidence_references": [
+          "moment:eid_al_fitr:1",
+          "moment-definition:eid_al_fitr:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "eid_al_fitr",
+        "moment_type": "religious",
+        "priority": 90,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "celebratory",
+          "warm",
+          "premium",
+          "gifting"
+        ]
+      },
+      {
+        "active_from": "2026-12-15",
+        "active_until": "2027-01-01",
+        "avoid_elements": [
+          "unsupported performance claims"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "New Year",
+        "eligible": false,
+        "evidence_references": [
+          "moment:new_year:1",
+          "moment-definition:new_year:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "new_year",
+        "moment_type": "commercial",
+        "priority": 75,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "celebratory",
+          "renewal",
+          "premium",
+          "optimistic"
+        ]
+      },
+      {
+        "active_from": "2026-02-01",
+        "active_until": "2026-02-14",
+        "avoid_elements": [
+          "overused romantic clichés",
+          "unsupported cultural assumptions"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Valentine's",
+        "eligible": false,
+        "evidence_references": [
+          "moment:valentines:1",
+          "moment-definition:valentines:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "valentines",
+        "moment_type": "commercial",
+        "priority": 65,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "warm",
+          "giftable",
+          "premium",
+          "celebratory"
+        ]
+      },
+      {
+        "active_from": "2026-12-01",
+        "active_until": "2027-02-28",
+        "avoid_elements": [
+          "snow imagery in markets where it is irrelevant"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Winter",
+        "eligible": false,
+        "evidence_references": [
+          "country-profile:SA:1",
+          "moment-definition:winter:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "winter",
+        "moment_type": "season",
+        "priority": 65,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "warm",
+          "cozy",
+          "soft",
+          "layered"
+        ]
+      },
+      {
+        "active_from": "2026-03-01",
+        "active_until": "2026-05-31",
+        "avoid_elements": [
+          "excessive floral clichés"
+        ],
+        "business_fit": "medium",
+        "campaign_date": "2026-07-18",
+        "display_name": "Spring",
+        "eligible": false,
+        "evidence_references": [
+          "country-profile:SA:1",
+          "moment-definition:spring:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "spring",
+        "moment_type": "season",
+        "priority": 50,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has medium fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "fresh",
+          "soft",
+          "renewed",
+          "airy"
+        ]
+      },
+      {
+        "active_from": "2026-09-01",
+        "active_until": "2026-11-30",
+        "avoid_elements": [
+          "unrelated seasonal symbols"
+        ],
+        "business_fit": "medium",
+        "campaign_date": "2026-07-18",
+        "display_name": "Autumn",
+        "eligible": false,
+        "evidence_references": [
+          "country-profile:SA:1",
+          "moment-definition:autumn:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "autumn",
+        "moment_type": "season",
+        "priority": 45,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has medium fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "warm",
+          "layered",
+          "earthy",
+          "textured"
+        ]
+      }
+    ],
+    "secondary_accents": [],
+    "warnings": [
+      "back_to_school: Country-specific moment 'back_to_school' requires a country/year override.",
+      "black_friday: Country-specific moment 'black_friday' requires a country/year override.",
+      "graduation: Country-specific moment 'graduation' requires a country/year override.",
+      "mother_day: Country-specific moment 'mother_day' requires a country/year override.",
+      "saudi_national_day: Country-specific moment 'saudi_national_day' requires a country/year override.",
+      "white_friday: Country-specific moment 'white_friday' requires a country/year override."
+    ]
+  }
+}
