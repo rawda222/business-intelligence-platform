@@ -29,7 +29,9 @@ def _load_fixture() -> dict:
 
 
 def test_image_handoff_matches_golden_contract():
-    """The image-team response must match the reviewed fixture."""
+    """
+    The current handoff must match the reviewed JSON fixture.
+    """
 
     expected = _load_fixture()
 
@@ -39,7 +41,7 @@ def test_image_handoff_matches_golden_contract():
 
 
 def test_image_handoff_has_expected_root_contract():
-    """The handoff should expose only approved root fields."""
+    """Only approved root fields should be exposed."""
 
     payload = _load_fixture()
 
@@ -63,11 +65,13 @@ def test_image_handoff_has_expected_root_contract():
 
 
 def test_image_handoff_excludes_internal_diagnostics():
-    """Internal resolution data must not reach image services."""
+    """
+    Internal resolution and account data must not reach images.
+    """
 
     payload = _load_fixture()
 
-    serialized = json.dumps(
+    serialized_payload = json.dumps(
         payload
     )
 
@@ -81,11 +85,16 @@ def test_image_handoff_excludes_internal_diagnostics():
     ]
 
     for field_name in excluded_fields:
-        assert field_name not in serialized
+        assert (
+            field_name
+            not in serialized_payload
+        )
 
 
 def test_image_handoff_contains_selected_visual_direction():
-    """The handoff should contain the selected visual direction."""
+    """
+    The contract should contain the selected visual theme.
+    """
 
     payload = _load_fixture()
 
@@ -93,22 +102,31 @@ def test_image_handoff_contains_selected_visual_direction():
 
     assert theme is not None
 
-    assert theme["theme_key"] == "summer"
-
-    assert theme["business_fit"] == "high"
-
-    assert theme["status"] == "active"
-
     assert (
-        theme["creative_direction"][
-            "visual_tokens"
-        ]
+        theme["theme_key"]
+        == "summer"
     )
 
     assert (
-        theme["constraints"][
-            "brand_rules"
-        ]
+        theme["business_fit"]
+        == "high"
+    )
+
+    assert (
+        theme["status"]
+        == "active"
+    )
+
+    assert (
+        theme[
+            "creative_direction"
+        ]["visual_tokens"]
+    )
+
+    assert (
+        theme[
+            "constraints"
+        ]["brand_rules"]
     )
 
 
@@ -121,7 +139,9 @@ def test_image_handoff_evidence_is_unique():
         "evidence_references"
     ]
 
-    assert len(evidence) == len(
+    assert len(
+        evidence
+    ) == len(
         set(evidence)
     )
 

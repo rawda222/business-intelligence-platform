@@ -29,7 +29,12 @@ OUTPUT_PATH = (
 
 
 def build_handoff_payload() -> dict:
-    """Build the deterministic image-team contract."""
+    """
+    Build the deterministic image-generation handoff payload.
+
+    The full automatic response and the compact handoff use the
+    same fixed business, account, timestamp, and resolution ID.
+    """
 
     full_response = (
         AutomaticCreativeThemeResponse
@@ -38,8 +43,10 @@ def build_handoff_payload() -> dict:
         )
     )
 
-    handoff = map_image_generation_handoff(
-        full_response
+    handoff = (
+        map_image_generation_handoff(
+            full_response
+        )
     )
 
     return handoff.model_dump(
@@ -55,14 +62,15 @@ def main() -> None:
         exist_ok=True,
     )
 
+    serialized_payload = json.dumps(
+        build_handoff_payload(),
+        indent=2,
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+
     OUTPUT_PATH.write_text(
-        json.dumps(
-            build_handoff_payload(),
-            indent=2,
-            ensure_ascii=False,
-            sort_keys=True,
-        )
-        + "\n",
+        serialized_payload + "\n",
         encoding="utf-8",
     )
 
