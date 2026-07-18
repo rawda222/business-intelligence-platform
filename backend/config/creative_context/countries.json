@@ -1,0 +1,326 @@
+{
+  "registry_version": "1.0",
+  "countries": [
+    {
+      "country_code": "SA",
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Asia/Riyadh",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "country_code": "AE",
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Asia/Dubai",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "country_code": "KW",
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Asia/Kuwait",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "country_code": "QA",
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Asia/Qatar",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "country_code": "BH",
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Asia/Bahrain",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "country_code": "OM",
+      "market_groups": [
+        "GCC",
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Asia/Muscat",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "country_code": "EG",
+      "market_groups": [
+        "MENA",
+        "EMEA"
+      ],
+      "hemisphere": "northern",
+      "timezone": "Africa/Cairo",
+      "languages": [
+        "ar",
+        "en"
+      ],
+      "season_windows": [
+        {
+          "season_key": "summer",
+          "start_month": 6,
+          "start_day": 1,
+          "end_month": 8,
+          "end_day": 31
+        },
+        {
+          "season_key": "autumn",
+          "start_month": 9,
+          "start_day": 1,
+          "end_month": 11,
+          "end_day": 30
+        },
+        {
+          "season_key": "winter",
+          "start_month": 12,
+          "start_day": 1,
+          "end_month": 2,
+          "end_day": 28
+        },
+        {
+          "season_key": "spring",
+          "start_month": 3,
+          "start_day": 1,
+          "end_month": 5,
+          "end_day": 31
+        }
+      ],
+      "enabled": true,
+      "version": "1"
+    }
+  ]
+}
