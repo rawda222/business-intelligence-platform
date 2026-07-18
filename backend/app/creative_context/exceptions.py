@@ -25,3 +25,20 @@ class DuplicateCountryCodeError(
     CountryRegistryError
 ):
     """Multiple profiles use the same country code."""
+
+class MomentRegistryError(
+    CreativeContextError
+):
+    """Market-moment registry configuration is invalid."""
+
+
+class MomentNotFoundError(
+    MomentRegistryError
+):
+    """Requested market moment is missing or disabled."""
+
+
+class DuplicateMomentKeyError(
+    MomentRegistryError
+):
+    """Multiple market moments use the same key."""

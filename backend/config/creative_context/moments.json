@@ -1,0 +1,401 @@
+{
+  "registry_version": "1.0",
+  "moments": [
+    {
+      "key": "summer",
+      "display_name": "Summer",
+      "moment_type": "season",
+      "date_rule": {
+        "rule_type": "country_season",
+        "season_key": "summer"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["food_and_beverage", "hospitality"],
+      "medium_fit_business_types": ["retail"],
+      "low_fit_business_types": ["saas"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 7,
+      "priority": 70,
+      "visual_tokens": ["bright", "fresh", "light", "refreshing"],
+      "default_avoid_elements": ["generic tropical clichés"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "autumn",
+      "display_name": "Autumn",
+      "moment_type": "season",
+      "date_rule": {
+        "rule_type": "country_season",
+        "season_key": "autumn"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["hospitality", "retail"],
+      "medium_fit_business_types": ["food_and_beverage"],
+      "low_fit_business_types": ["saas"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement"],
+      "lead_days": 14,
+      "cooldown_days": 7,
+      "priority": 45,
+      "visual_tokens": ["warm", "layered", "earthy", "textured"],
+      "default_avoid_elements": ["unrelated seasonal symbols"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "winter",
+      "display_name": "Winter",
+      "moment_type": "season",
+      "date_rule": {
+        "rule_type": "country_season",
+        "season_key": "winter"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": ["saas"],
+      "low_fit_business_types": [],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 7,
+      "priority": 65,
+      "visual_tokens": ["warm", "cozy", "soft", "layered"],
+      "default_avoid_elements": ["snow imagery in markets where it is irrelevant"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "spring",
+      "display_name": "Spring",
+      "moment_type": "season",
+      "date_rule": {
+        "rule_type": "country_season",
+        "season_key": "spring"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["retail", "hospitality"],
+      "medium_fit_business_types": ["food_and_beverage"],
+      "low_fit_business_types": ["saas"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement"],
+      "lead_days": 14,
+      "cooldown_days": 7,
+      "priority": 50,
+      "visual_tokens": ["fresh", "soft", "renewed", "airy"],
+      "default_avoid_elements": ["excessive floral clichés"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "ramadan",
+      "display_name": "Ramadan",
+      "moment_type": "religious",
+      "date_rule": {
+        "rule_type": "hijri_annual_range",
+        "hijri_start_month": 9,
+        "hijri_start_day": 1,
+        "hijri_end_month": 9,
+        "hijri_end_day": 30
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": ["saas", "b2b_services"],
+      "low_fit_business_types": [],
+      "excluded_business_types": [],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 30,
+      "cooldown_days": 0,
+      "priority": 95,
+      "visual_tokens": ["warm", "evening", "hospitality", "gathering"],
+      "default_avoid_elements": [
+        "unverified religious claims",
+        "excessive stereotypical symbols"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "eid_al_fitr",
+      "display_name": "Eid Al-Fitr",
+      "moment_type": "religious",
+      "date_rule": {
+        "rule_type": "hijri_annual_range",
+        "hijri_start_month": 10,
+        "hijri_start_day": 1,
+        "hijri_end_month": 10,
+        "hijri_end_day": 3
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": ["saas", "b2b_services"],
+      "low_fit_business_types": [],
+      "excluded_business_types": [],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 3,
+      "priority": 90,
+      "visual_tokens": ["celebratory", "warm", "premium", "gifting"],
+      "default_avoid_elements": [
+        "unverified religious claims",
+        "generic cultural stereotypes"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "eid_al_adha",
+      "display_name": "Eid Al-Adha",
+      "moment_type": "religious",
+      "date_rule": {
+        "rule_type": "hijri_annual_range",
+        "hijri_start_month": 12,
+        "hijri_start_day": 10,
+        "hijri_end_month": 12,
+        "hijri_end_day": 13
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": ["saas", "b2b_services"],
+      "low_fit_business_types": [],
+      "excluded_business_types": [],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 3,
+      "priority": 90,
+      "visual_tokens": ["celebratory", "generous", "warm", "gathering"],
+      "default_avoid_elements": [
+        "graphic imagery",
+        "unverified religious claims"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "valentines",
+      "display_name": "Valentine's",
+      "moment_type": "commercial",
+      "date_rule": {
+        "rule_type": "fixed_annual_range",
+        "start_month": 2,
+        "start_day": 1,
+        "end_month": 2,
+        "end_day": 14
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": [],
+      "low_fit_business_types": ["saas"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 1,
+      "priority": 65,
+      "visual_tokens": ["warm", "giftable", "premium", "celebratory"],
+      "default_avoid_elements": [
+        "overused romantic clichés",
+        "unsupported cultural assumptions"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "new_year",
+      "display_name": "New Year",
+      "moment_type": "commercial",
+      "date_rule": {
+        "rule_type": "fixed_annual_range",
+        "start_month": 12,
+        "start_day": 15,
+        "end_month": 1,
+        "end_day": 1
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["hospitality", "retail", "food_and_beverage"],
+      "medium_fit_business_types": ["saas", "b2b_services"],
+      "low_fit_business_types": [],
+      "excluded_business_types": [],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 3,
+      "priority": 75,
+      "visual_tokens": ["celebratory", "renewal", "premium", "optimistic"],
+      "default_avoid_elements": ["unsupported performance claims"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "mother_day",
+      "display_name": "Mother's Day",
+      "moment_type": "commercial",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "mother_day"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["retail", "hospitality", "food_and_beverage"],
+      "medium_fit_business_types": [],
+      "low_fit_business_types": ["saas"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 21,
+      "cooldown_days": 1,
+      "priority": 65,
+      "visual_tokens": ["warm", "appreciative", "giftable", "soft"],
+      "default_avoid_elements": ["family stereotypes"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "black_friday",
+      "display_name": "Black Friday",
+      "moment_type": "commercial",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "black_friday"
+      },
+      "applicable_market_groups": ["EMEA", "APAC"],
+      "high_fit_business_types": ["retail"],
+      "medium_fit_business_types": ["hospitality", "food_and_beverage", "saas"],
+      "low_fit_business_types": ["b2b_services"],
+      "excluded_business_types": [],
+      "applicable_objectives": ["sales"],
+      "lead_days": 21,
+      "cooldown_days": 3,
+      "priority": 80,
+      "visual_tokens": ["bold", "high_contrast", "urgent", "commercial"],
+      "default_avoid_elements": [
+        "fake discounts",
+        "unsupported urgency claims"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "white_friday",
+      "display_name": "White Friday",
+      "moment_type": "commercial",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "white_friday"
+      },
+      "applicable_market_groups": ["GCC", "MENA"],
+      "high_fit_business_types": ["retail"],
+      "medium_fit_business_types": ["hospitality", "food_and_beverage", "saas"],
+      "low_fit_business_types": ["b2b_services"],
+      "excluded_business_types": [],
+      "applicable_objectives": ["sales"],
+      "lead_days": 21,
+      "cooldown_days": 3,
+      "priority": 85,
+      "visual_tokens": ["bold", "clean", "high_contrast", "commercial"],
+      "default_avoid_elements": [
+        "fake discounts",
+        "unsupported urgency claims"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "back_to_school",
+      "display_name": "Back to School",
+      "moment_type": "education",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "back_to_school"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["retail"],
+      "medium_fit_business_types": ["food_and_beverage", "saas"],
+      "low_fit_business_types": ["hospitality"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 30,
+      "cooldown_days": 7,
+      "priority": 70,
+      "visual_tokens": ["organized", "energetic", "practical", "fresh"],
+      "default_avoid_elements": [
+        "age stereotypes",
+        "unsupported education claims"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "graduation",
+      "display_name": "Graduation",
+      "moment_type": "education",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "graduation"
+      },
+      "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
+      "high_fit_business_types": ["retail", "hospitality"],
+      "medium_fit_business_types": ["food_and_beverage"],
+      "low_fit_business_types": ["saas"],
+      "excluded_business_types": ["b2b_services"],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 30,
+      "cooldown_days": 7,
+      "priority": 60,
+      "visual_tokens": ["celebratory", "achievement", "optimistic", "premium"],
+      "default_avoid_elements": ["institution-specific symbols without approval"],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "saudi_national_day",
+      "display_name": "Saudi National Day",
+      "moment_type": "national",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "saudi_national_day"
+      },
+      "applicable_countries": ["SA"],
+      "applicable_market_groups": [],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": ["saas", "b2b_services"],
+      "low_fit_business_types": [],
+      "excluded_business_types": [],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 30,
+      "cooldown_days": 3,
+      "priority": 95,
+      "visual_tokens": ["national", "celebratory", "premium", "community"],
+      "default_avoid_elements": [
+        "incorrect official symbols",
+        "unauthorized emblem usage"
+      ],
+      "enabled": true,
+      "version": "1"
+    },
+    {
+      "key": "uae_national_day",
+      "display_name": "UAE National Day",
+      "moment_type": "national",
+      "date_rule": {
+        "rule_type": "country_specific_date",
+        "country_event_key": "uae_national_day"
+      },
+      "applicable_countries": ["AE"],
+      "applicable_market_groups": [],
+      "high_fit_business_types": ["food_and_beverage", "hospitality", "retail"],
+      "medium_fit_business_types": ["saas", "b2b_services"],
+      "low_fit_business_types": [],
+      "excluded_business_types": [],
+      "applicable_objectives": ["awareness", "engagement", "sales"],
+      "lead_days": 30,
+      "cooldown_days": 3,
+      "priority": 95,
+      "visual_tokens": ["national", "celebratory", "premium", "community"],
+      "default_avoid_elements": [
+        "incorrect official symbols",
+        "unauthorized emblem usage"
+      ],
+      "enabled": true,
+      "version": "1"
+    }
+  ]
+}
