@@ -61,3 +61,8 @@ class BusinessCreativeContextError(
     CreativeContextError
 ):
     """Business data cannot produce a safe creative context."""
+
+class SocialPlatformContextError(
+    CreativeContextError
+):
+    """Social-account data cannot produce a safe platform context."""
