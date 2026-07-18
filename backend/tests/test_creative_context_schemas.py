@@ -26,6 +26,7 @@ from app.creative_context.schemas import (
     ResolvedMarketMoment,
     ThemeFallback,
     ThemeResolutionResult,
+    ResolvedMomentWindow
 )
 
 
@@ -496,4 +497,90 @@ def test_unknown_fields_are_rejected():
             content_format="feed_post",
             objective="awareness",
             unexpected_field=True,
+        )
+
+def test_valid_resolved_moment_window():
+    window = ResolvedMomentWindow(
+        moment_key="summer",
+        country_code="SA",
+        campaign_date=date(
+            2026,
+            7,
+            18,
+        ),
+        active_from=date(
+            2026,
+            6,
+            1,
+        ),
+        active_until=date(
+            2026,
+            8,
+            31,
+        ),
+        lead_from=date(
+            2026,
+            5,
+            11,
+        ),
+        cooldown_until=date(
+            2026,
+            9,
+            7,
+        ),
+        status="active",
+        date_source="country_season",
+        evidence_reference=(
+            "country-profile:SA:v1"
+        ),
+    )
+
+    assert window.status == "active"
+
+    assert (
+        window.date_source
+        == "country_season"
+    )
+
+
+def test_resolved_window_rejects_invalid_order():
+    with pytest.raises(
+        ValidationError,
+        match="lead_from",
+    ):
+        ResolvedMomentWindow(
+            moment_key="summer",
+            country_code="SA",
+            campaign_date=date(
+                2026,
+                7,
+                18,
+            ),
+            active_from=date(
+                2026,
+                6,
+                1,
+            ),
+            active_until=date(
+                2026,
+                8,
+                31,
+            ),
+            lead_from=date(
+                2026,
+                6,
+                2,
+            ),
+            cooldown_until=date(
+                2026,
+                9,
+                7,
+            ),
+            status="active",
+            date_source=(
+                "country_season"
+            ),
+            evidence_reference=(
+                "country-profile:SA:v1"
+            ),
         )

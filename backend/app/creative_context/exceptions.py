@@ -42,3 +42,13 @@ class DuplicateMomentKeyError(
     MomentRegistryError
 ):
     """Multiple market moments use the same key."""
+class MomentDateResolutionError(
+    CreativeContextError
+):
+    """A market-moment date window could not be resolved."""
+
+
+class MomentDateOverrideError(
+    MomentDateResolutionError
+):
+    """A moment date override is invalid or conflicting."""

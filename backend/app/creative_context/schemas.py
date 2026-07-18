@@ -63,6 +63,14 @@ MomentStatus = Literal[
     "inactive",
 ]
 
+DateResolutionSource = Literal[
+    "country_season",
+    "fixed_annual_range",
+    "hijri_annual_range",
+    "country_specific_date",
+    "explicit_date_range",
+    "country_year_override",
+]
 
 BusinessFitLevel = Literal[
     "high",
@@ -657,6 +665,68 @@ class BusinessCreativeContext(
 # ============================================================
 # Resolved Moment Contracts
 # ============================================================
+class ResolvedMomentWindow(
+    CreativeContextModel
+):
+    """Resolved calendar window for one market moment."""
+
+    moment_key: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    country_code: str = Field(
+        min_length=2,
+        max_length=2,
+        pattern=r"^[A-Z]{2}$",
+    )
+
+    campaign_date: date
+
+    active_from: date
+
+    active_until: date
+
+    lead_from: date
+
+    cooldown_until: date
+
+    status: MomentStatus
+
+    date_source: DateResolutionSource
+
+    evidence_reference: str = Field(
+        min_length=1,
+        max_length=300,
+    )
+
+    @model_validator(mode="after")
+    def validate_window_order(
+        self,
+    ) -> "ResolvedMomentWindow":
+        """Validate lead, active, and cooldown ordering."""
+
+        if self.active_until < self.active_from:
+            raise ValueError(
+                "active_until must be on or "
+                "after active_from."
+            )
+
+        if self.lead_from > self.active_from:
+            raise ValueError(
+                "lead_from must be on or "
+                "before active_from."
+            )
+
+        if self.cooldown_until < self.active_until:
+            raise ValueError(
+                "cooldown_until must be on or "
+                "after active_until."
+            )
+
+        return self
+
+
 class ResolvedMarketMoment(
     CreativeContextModel
 ):
