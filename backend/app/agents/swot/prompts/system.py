@@ -37,12 +37,12 @@ SYSTEM_PROMPT = dedent(
 
     SOURCE-THEME POLICY:
 
-    - Customer-theme items must use an exact supplied
-      theme_category as source_theme.
-    - Trend-backed items must use:
-      trend:<candidate_id>
-    - Do not invent source_theme values.
-
+- Customer-theme items must use an exact supplied
+  theme_category as source_theme.
+- Trend-backed items must use the exact supplied
+  candidate_id as source_theme.
+- Do not add, remove, or repeat a trend prefix.
+- Do not invent source_theme values.
     QUADRANT POLICY:
 
     - Strengths and Weaknesses require target-business customer

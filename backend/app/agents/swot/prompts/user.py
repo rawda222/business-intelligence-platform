@@ -205,8 +205,9 @@ MANDATORY EVIDENCE RULES:
 11. Use exact theme_category values for customer-theme
     source_theme.
 
-12. For a trend-backed item, source_theme must start with
-    trend: followed immediately by the exact candidate_id.
+12. For a trend-backed item, source_theme must equal the exact
+    candidate_id supplied in brand_trend_candidates. Do not add,
+    remove, or repeat any prefix.
 
 13. If evidence is insufficient, omit the item. Do not fill
     quadrants merely to produce a balanced matrix.
