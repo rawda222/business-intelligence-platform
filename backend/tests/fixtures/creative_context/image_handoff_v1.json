@@ -1,0 +1,86 @@
+{
+  "business_id": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "campaign_date": "2026-07-18",
+  "content_format": "feed_post",
+  "contract_version": "1.0",
+  "evidence_references": [
+    "country-profile:SA:1",
+    "moment-definition:summer:1",
+    "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+  ],
+  "fallback": {
+    "allowed": true,
+    "reason": "Brand-only styling remains available as a safe fallback.",
+    "theme_key": "brand_only"
+  },
+  "generated_at": "2026-07-18T09:00:00Z",
+  "objective": "awareness",
+  "platform": "instagram",
+  "product_context": "cafe",
+  "resolution_id": "dddddddd-dddd-dddd-dddd-dddddddddddd",
+  "target_country_code": "SA",
+  "theme": {
+    "business_fit": "high",
+    "campaign_date": "2026-07-18",
+    "confidence": 0.955,
+    "constraints": {
+      "avoid_elements": [
+        "generic tropical clichés",
+        "competitor branding",
+        "unsupported product claims"
+      ],
+      "brand_rules": [
+        "Preserve brand colors",
+        "Keep packaging recognizable"
+      ],
+      "market_rules": [
+        "Use styling appropriate for the target country SA."
+      ]
+    },
+    "content_format": "feed_post",
+    "creative_direction": {
+      "composition_hint": null,
+      "concept": "Summer creative direction for cafe",
+      "lighting_hint": null,
+      "mood_keywords": [
+        "bright",
+        "fresh",
+        "light",
+        "refreshing"
+      ],
+      "palette_hints": [],
+      "visual_tokens": [
+        "bright",
+        "fresh",
+        "light",
+        "refreshing"
+      ]
+    },
+    "display_name": "Summer",
+    "evidence_references": [
+      "country-profile:SA:1",
+      "moment-definition:summer:1",
+      "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    ],
+    "market_groups": [
+      "GCC",
+      "MENA",
+      "EMEA"
+    ],
+    "moment_type": "season",
+    "objective": "awareness",
+    "platform": "instagram",
+    "reasons": [
+      "The campaign date is inside the active moment window.",
+      "The target country is inside the configured moment scope.",
+      "The moment has high fit for the business type.",
+      "The campaign objective is supported by the moment."
+    ],
+    "source_moment": "summer",
+    "status": "active",
+    "target_country_code": "SA",
+    "theme_key": "summer",
+    "valid_from": "2026-06-01",
+    "valid_until": "2026-08-31"
+  }
+}
