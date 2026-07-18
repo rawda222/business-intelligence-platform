@@ -36,6 +36,12 @@ _SENTIMENT_KEYS = (
 )
 
 
+_KNOWN_SOURCE_PREFIXES = (
+    "google_maps",
+    "facebook",
+    "instagram",
+)
+
 def _as_mapping(
     value: Any,
 ) -> dict[str, Any]:
@@ -176,7 +182,184 @@ def _unique_references(
             )
 
     return result
+def _safe_optional_float(
+    value: Any,
+) -> float | None:
+    """Return one finite float or None."""
 
+    if value is None:
+        return None
+
+    if isinstance(
+        value,
+        bool,
+    ):
+        return None
+
+    try:
+        normalized = float(
+            value
+        )
+    except (
+        TypeError,
+        ValueError,
+    ):
+        return None
+
+    return normalized
+
+
+def _bounded_confidence(
+    value: Any,
+) -> float | None:
+    """Normalize an optional confidence value to zero through one."""
+
+    normalized = _safe_optional_float(
+        value
+    )
+
+    if normalized is None:
+        return None
+
+    return max(
+        0.0,
+        min(
+            1.0,
+            normalized,
+        ),
+    )
+
+
+def _representative_quotes(
+    theme: dict[str, Any],
+) -> list[str]:
+    """Normalize representative quotes while preserving order."""
+
+    raw_quotes = _as_list(
+        theme.get(
+            "representative_quotes",
+            theme.get(
+                "quotes",
+                [],
+            ),
+        )
+    )
+
+    result: list[str] = []
+
+    for raw_quote in raw_quotes:
+        quote: str | None = None
+
+        if isinstance(
+            raw_quote,
+            str,
+        ):
+            quote = raw_quote.strip()
+
+        elif isinstance(
+            raw_quote,
+            Mapping,
+        ):
+            raw_text = raw_quote.get(
+                "text"
+            )
+
+            if isinstance(
+                raw_text,
+                str,
+            ):
+                quote = raw_text.strip()
+
+        if (
+            quote
+            and quote not in result
+        ):
+            result.append(
+                quote
+            )
+
+    return result
+
+
+def _source_from_reference(
+    reference: Any,
+) -> str | None:
+    """Extract one known source platform from an evidence reference."""
+
+    if not isinstance(
+        reference,
+        str,
+    ):
+        return None
+
+    cleaned = reference.strip().lower()
+
+    if not cleaned:
+        return None
+
+    prefix = cleaned.split(
+        ":",
+        maxsplit=1,
+    )[0]
+
+    if prefix in _KNOWN_SOURCE_PREFIXES:
+        return prefix
+
+    return None
+
+
+def _theme_source_platforms(
+    *,
+    theme: dict[str, Any],
+    evidence_references: list[Any],
+) -> list[str]:
+    """
+    Preserve explicit source platforms or derive them from evidence.
+
+    Source-aware references use forms such as:
+    google_maps:review:<id>
+    facebook:comment:<tagram:comment:<id>
+    """
+
+    explicit_sources = _as_list(
+        theme.get(
+            "source_platforms"
+        )
+    )
+
+    result: list[str] = []
+
+    for raw_source in explicit_sources:
+        if not isinstance(
+            raw_source,
+            str,
+        ):
+            continue
+
+        source = raw_source.strip().lower()
+
+        if (
+            source in _KNOWN_SOURCE_PREFIXES
+            and source not in result
+        ):
+            result.append(
+                source
+            )
+
+    for reference in evidence_references:
+        source = _source_from_reference(
+            reference
+        )
+
+        if (
+            source is not None
+            and source not in result
+        ):
+            result.append(
+                source
+            )
+
+    return result
 
 def _sentiment_distribution(
     theme: dict[str, Any],
@@ -268,7 +451,7 @@ def _theme_evidence_references(
 def _build_review_theme(
     raw_theme: Any,
 ) -> ReviewTheme | None:
-    """Build one validated SWOT v7 ReviewTheme."""
+    """Build one complete evidence-backed SWOT v7 ReviewTheme."""
 
     theme = _as_mapping(
         raw_theme
@@ -296,6 +479,22 @@ def _build_review_theme(
     distribution = (
         _sentiment_distribution(
             theme
+        )
+    )
+
+    evidence_references = (
+        _theme_evidence_references(
+            theme,
+            mentions,
+        )
+    )
+
+    source_platforms = (
+        _theme_source_platforms(
+            theme=theme,
+            evidence_references=(
+                evidence_references
+            ),
         )
     )
 
@@ -327,30 +526,54 @@ def _build_review_theme(
                 ],
             )
         ),
-        target_score=theme.get(
-            "target_score",
-            theme.get(
-                "_target_score"
-            ),
+        confidence_score=(
+            _bounded_confidence(
+                theme.get(
+                    "confidence_score"
+                )
+            )
         ),
-        competitor_score=theme.get(
-            "competitor_score",
-            theme.get(
-                "_competitor_score"
-            ),
+        target_score=(
+            _safe_optional_float(
+                theme.get(
+                    "target_score",
+                    theme.get(
+                        "_target_score"
+                    ),
+                )
+            )
         ),
-        performance_gap=theme.get(
-            "performance_gap",
-            theme.get(
-                "_gap"
-            ),
+        competitor_score=(
+            _safe_optional_float(
+                theme.get(
+                    "competitor_score",
+                    theme.get(
+                        "_competitor_score"
+                    ),
+                )
+            )
+        ),
+        performance_gap=(
+            _safe_optional_float(
+                theme.get(
+                    "performance_gap",
+                    theme.get(
+                        "_gap"
+                    ),
+                )
+            )
         ),
         mentions=mentions,
         evidence_refs=(
-            _theme_evidence_references(
-                theme,
-                mentions,
+            evidence_references
+        ),
+        representative_quotes=(
+            _representative_quotes(
+                theme
             )
+        ),
+        source_platforms=(
+            source_platforms
         ),
     )
 
@@ -410,15 +633,27 @@ def build_swot_business_profile(
             )
         )
     else:
-        normalized_target_count = sum(
-            theme.frequency
-            for theme in themes
+        unique_target_references: list[Any] = []
+
+        for theme in themes:
             if (
                 theme.entity_type
-                == "target_business"
-            )
-        )
+                != "target_business"
+            ):
+                continue
 
+            for reference in theme.evidence_refs:
+                if (
+                    reference
+                    not in unique_target_references
+                ):
+                    unique_target_references.append(
+                        reference
+                    )
+
+        normalized_target_count = len(
+            unique_target_references
+        )
     return BusinessProfile(
         business_name=_clean_text(
             business_name,

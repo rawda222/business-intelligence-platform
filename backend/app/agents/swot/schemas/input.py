@@ -22,18 +22,57 @@ class SentimentBalance(BaseModel):
 
 
 class ReviewTheme(BaseModel):
-    """A theme block as emitted by the Theme Extractor (stage 3)."""
-    model_config = ConfigDict(extra="ignore")
-    
+    """
+    One evidence-backed theme consumed by SWOT Agent v7.
+
+    Themes may combine customer voice from Google Maps, Facebook,
+    and Instagram after normalization and theme extraction.
+    """
+
+    model_config = ConfigDict(
+        extra="ignore",
+    )
+
     theme_category: str
+
     entity_type: str = "target_business"
-    frequency: int = 0
-    sentiment_balance: SentimentBalance = Field(default_factory=SentimentBalance)
+
+    frequency: int = Field(
+        default=0,
+        ge=0,
+    )
+
+    sentiment_balance: SentimentBalance = Field(
+        default_factory=SentimentBalance,
+    )
+
+    confidence_score: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+    )
+
     target_score: Optional[float] = None
+
     competitor_score: Optional[float] = None
+
     performance_gap: Optional[float] = None
-    mentions: List[Any] = Field(default_factory=list)
-    evidence_refs: List[Any] = Field(default_factory=list)
+
+    mentions: List[Any] = Field(
+        default_factory=list,
+    )
+
+    evidence_refs: List[Any] = Field(
+        default_factory=list,
+    )
+
+    representative_quotes: List[str] = Field(
+        default_factory=list,
+    )
+
+    source_platforms: List[str] = Field(
+        default_factory=list,
+    )
 
 
 class CompetitorProfile(BaseModel):
