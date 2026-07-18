@@ -1026,3 +1026,84 @@ class ThemeResolutionResult(
             )
 
         return self
+class AutoContextFieldResponse(
+    CreativeContextModel
+):
+    """One automatically inferred field with provenance."""
+
+    value: str = Field(
+        min_length=1,
+        max_length=500,
+    )
+
+    source: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    confidence: float = Field(
+        ge=0.0,
+        le=1.0,
+    )
+
+
+class AutomaticCampaignContextResponse(
+    CreativeContextModel
+):
+    """Public explanation of the generated campaign context."""
+
+    request: MomentResolutionRequest
+
+    campaign_date: AutoContextFieldResponse
+
+    target_country_code: AutoContextFieldResponse
+
+    platform: AutoContextFieldResponse
+
+    content_format: AutoContextFieldResponse
+
+    objective: AutoContextFieldResponse
+
+    product_context: AutoContextFieldResponse
+
+    evidence_references: list[str] = Field(
+        default_factory=list,
+    )
+
+    warnings: list[str] = Field(
+        default_factory=list,
+    )
+
+
+class SocialPlatformContextResponse(
+    CreativeContextModel
+):
+    """Public summary of usable social platforms."""
+
+    platforms: list[str] = Field(
+        default_factory=list,
+    )
+
+    usable_account_ids: list[UUID] = Field(
+        default_factory=list,
+    )
+
+    warnings: list[str] = Field(
+        default_factory=list,
+    )
+
+
+class AutomaticCreativeThemeResponse(
+    CreativeContextModel
+):
+    """Complete automatic creative-theme API response."""
+
+    theme_result: ThemeResolutionResult
+
+    automatic_context: (
+        AutomaticCampaignContextResponse
+    )
+
+    social_platform_context: (
+        SocialPlatformContextResponse
+    )
