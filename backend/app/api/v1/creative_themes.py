@@ -1,16 +1,13 @@
 """
 Automatic Creative Theme Endpoints
 
-Resolves an image-team creative-theme contract from business data
-without requiring campaign context from the user.
+Provides two authenticated business-scoped creative-theme views:
 
-Every request:
+- Full automatic resolution for internal audit and diagnostics.
+- Compact image-generation handoff for downstream image services.
 
-- Requires an authenticated user.
-- Verifies business ownership.
-- Loads active social accounts scoped to the business.
-- Builds campaign context automatically.
-- Returns provenance for every automatic decision.
+Every request verifies business ownership before loading social
+accounts or resolving creative context.
 """
 
 from uuid import UUID
@@ -32,11 +29,15 @@ from app.creative_context.automatic_service import (
 from app.creative_context.exceptions import (
     CreativeContextError,
 )
+from app.creative_context.image_handoff_mapper import (
+    map_image_generation_handoff,
+)
 from app.creative_context.response_mapper import (
     map_automatic_creative_theme_response,
 )
 from app.creative_context.schemas import (
     AutomaticCreativeThemeResponse,
+    ImageGenerationHandoff,
 )
 from app.db.postgres import get_db
 from app.models.pg.user import User
@@ -57,39 +58,17 @@ router = APIRouter(
 )
 
 
-@router.post(
-    "/auto-resolve",
-    response_model=(
-        AutomaticCreativeThemeResponse
-    ),
-    status_code=status.HTTP_200_OK,
-    summary=(
-        "Resolve automatic creative theme"
-    ),
-)
-async def auto_resolve_creative_theme(
+async def _resolve_full_response(
+    *,
     business_id: UUID,
-    current_user: User = Depends(
-        get_current_user
-    ),
-    db: AsyncSession = Depends(
-        get_db
-    ),
+    current_user: User,
+    db: AsyncSession,
 ) -> AutomaticCreativeThemeResponse:
     """
-    Resolve a creative theme using business-owned data.
+    Resolve the authenticated business into the full public contract.
 
-    No campaign request body is required. The system derives:
-
-    - Target country from the business profile.
-    - Campaign date from the country timezone.
-    - Platform from active connected social accounts.
-    - Content format from platform policy.
-    - Objective from the current safe policy.
-    - Product context from industry or business type.
-
-    A 404 response is returned for both missing businesses and
-    businesses owned by another tenant.
+    A 404 response is used for both missing and cross-tenant
+    businesses so that tenant existence is not disclosed.
     """
 
     business = await get_business_by_id(
@@ -134,4 +113,81 @@ async def auto_resolve_creative_theme(
         map_automatic_creative_theme_response(
             internal_result
         )
+    )
+
+
+@router.post(
+    "/auto-resolve",
+    response_model=(
+        AutomaticCreativeThemeResponse
+    ),
+    status_code=status.HTTP_200_OK,
+    summary=(
+        "Resolve automatic creative theme"
+    ),
+)
+async def auto_resolve_creative_theme(
+    business_id: UUID,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: AsyncSession = Depends(
+        get_db
+    ),
+) -> AutomaticCreativeThemeResponse:
+    """
+    Return the full automatic creative-theme resolution.
+
+    This response is intended for internal audit, diagnostics,
+    administration, and explainability. It includes resolved and
+    rejected moments, registry warnings, automatic provenance,
+    and social-platform context.
+    """
+
+    return await _resolve_full_response(
+        business_id=business_id,
+        current_user=current_user,
+        db=db,
+    )
+
+
+@router.post(
+    "/image-handoff",
+    response_model=ImageGenerationHandoff,
+    status_code=status.HTTP_200_OK,
+    summary=(
+        "Build image-generation handoff"
+    ),
+)
+async def build_image_generation_handoff(
+    business_id: UUID,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: AsyncSession = Depends(
+        get_db
+    ),
+) -> ImageGenerationHandoff:
+    """
+    Return the compact contract consumed by image services.
+
+    The response intentionally excludes:
+
+    - Rejected moments.
+    - Inactive moment candidates.
+    - Registry warnings.
+    - Social-account identifiers.
+    - Internal automatic-context diagnostics.
+    """
+
+    full_response = await (
+        _resolve_full_response(
+            business_id=business_id,
+            current_user=current_user,
+            db=db,
+        )
+    )
+
+    return map_image_generation_handoff(
+        full_response
     )
