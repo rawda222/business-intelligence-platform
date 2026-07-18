@@ -52,3 +52,8 @@ class MomentDateOverrideError(
     MomentDateResolutionError
 ):
     """A moment date override is invalid or conflicting."""
+
+class ThemeSelectionError(
+    CreativeContextError
+):
+    """A final creative theme could not be selected safely."""
