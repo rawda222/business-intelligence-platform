@@ -605,4 +605,3 @@ def test_bundle_profile_contains_grounded_generation_context():
             bundle.warnings
         )
     )
-
