@@ -22,6 +22,7 @@ from app.api.v1 import (
     reports,
     social_accounts,
     swot,
+    creative_themes,
 )
 from app.core.config import settings
 from app.db.mongo import (
@@ -103,6 +104,11 @@ app.include_router(
 
 app.include_router(
     businesses.router,
+    prefix=settings.API_V1_PREFIX,
+)
+
+app.include_router(
+    creative_themes.router,
     prefix=settings.API_V1_PREFIX,
 )
 

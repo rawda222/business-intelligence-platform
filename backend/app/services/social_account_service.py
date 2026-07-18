@@ -255,3 +255,31 @@ async def delete_social_account(
 
     await db.delete(account)
     await db.commit()
+
+# ============================================================
+# List Active Accounts for Automatic Creative Context
+# ============================================================
+async def list_active_social_accounts_for_business(
+    db: AsyncSession,
+    business_id: UUID,
+) -> list[SocialAccount]:
+    """
+    Return every active social account for one business.
+
+    Connection status is intentionally not filtered here.
+    The creative-context adapter decides which operational
+    connection states are usable and exposes fallback warnings.
+    """
+
+    result = await db.execute(
+        select(SocialAccount)
+        .where(
+            SocialAccount.business_id == business_id,
+            SocialAccount.is_active.is_(True),
+        )
+        .order_by(
+            SocialAccount.created_at.desc()
+        )
+    )
+
+    return list(result.scalars().all())
