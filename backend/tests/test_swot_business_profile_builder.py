@@ -1,0 +1,346 @@
+"""
+SWOT Business Profile Builder Tests
+"""
+
+from app.services.swot_business_profile_builder import (
+    build_swot_business_profile,
+)
+
+
+def test_preserves_theme_extractor_frequency_and_sentiment():
+    """
+    Theme Extractor output must reach SWOT v7 without falling back
+    to frequency=1 or a fabricated positive sentiment.
+    """
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [
+                {
+                    "theme_name": (
+                        "Service Speed"
+                    ),
+                    "theme_category": (
+                        "service_speed"
+                    ),
+                    "entity_type": (
+                        "target_business"
+                    ),
+                    "frequency_count": 200,
+                    "sentiment_distribution": {
+                        "positive": 40,
+                        "negative": 145,
+                        "neutral": 10,
+                        "mixed": 5,
+                    },
+                    "mentions": [
+                        f"google_maps:review:{index}"
+                        for index in range(
+                            200
+                        )
+                    ],
+                }
+            ],
+        },
+        target_review_count=200,
+    )
+
+    assert len(profile.themes) == 1
+
+    theme = profile.themes[0]
+
+    assert theme.theme_category == (
+        "service_speed"
+    )
+
+    assert theme.frequency == 200
+
+    assert (
+        theme.sentiment_balance.positive
+        == 40
+    )
+
+    assert (
+        theme.sentiment_balance.negative
+        == 145
+    )
+
+    assert (
+        theme.sentiment_balance.neutral
+        == 10
+    )
+
+    assert (
+        theme.sentiment_balance.mixed
+        == 5
+    )
+
+    assert (
+        theme.sentiment_balance.total
+        == 200
+    )
+
+    assert (
+        profile
+        .reviews_summary
+        .target_review_count
+        == 200
+    )
+
+
+def test_mentions_become_evidence_references():
+    """
+    Theme mentions should remain traceable evidence references.
+    """
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [
+                {
+                    "theme_category": (
+                        "product_quality"
+                    ),
+                    "entity_type": (
+                        "target_business"
+                    ),
+                    "frequency_count": 3,
+                    "sentiment_distribution": {
+                        "positive": 3,
+                        "negative": 0,
+                        "neutral": 0,
+                        "mixed": 0,
+                    },
+                    "mentions": [
+                        "google_maps:review:1",
+                        "facebook:comment:2",
+                        "instagram:comment:3",
+                    ],
+                }
+            ],
+        },
+    )
+
+    theme = profile.themes[0]
+
+    assert theme.evidence_refs == [
+        "google_maps:review:1",
+        "facebook:comment:2",
+        "instagram:comment:3",
+    ]
+
+
+def test_explicit_evidence_references_take_priority():
+    """Explicit evidence references should be preserved and deduplicated."""
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [
+                {
+                    "theme_category": (
+                        "service_quality"
+                    ),
+                    "frequency_count": 2,
+                    "sentiment_distribution": {
+                        "positive": 2,
+                    },
+                    "mentions": [
+                        "internal:mention:1",
+                    ],
+                    "evidence_refs": [
+                        "google_maps:review:10",
+                        "google_maps:review:10",
+                        "instagram:comment:11",
+                    ],
+                }
+            ],
+        },
+    )
+
+    assert (
+        profile.themes[0].evidence_refs
+        == [
+            "google_maps:review:10",
+            "instagram:comment:11",
+        ]
+    )
+
+
+def test_preserves_extracted_signal_collections():
+    """All deterministic signal collections should reach SWOT v7."""
+
+    positive_signal = {
+        "theme_category": "product_quality",
+        "reason": "high_positive_sentiment",
+    }
+
+    negative_signal = {
+        "theme_category": "service_speed",
+        "reason": "high_negative_sentiment",
+    }
+
+    opportunity_signal = {
+        "theme_category": "menu_variety",
+        "reason": "overperforms_competitors",
+    }
+
+    threat_signal = {
+        "theme_category": "pricing",
+        "reason": "underperforms_competitors",
+    }
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [],
+            "positive_signals": [
+                positive_signal
+            ],
+            "negative_signals": [
+                negative_signal
+            ],
+            "opportunity_signals": [
+                opportunity_signal
+            ],
+            "threat_signals": [
+                threat_signal
+            ],
+            "comparison_summary": {
+                "target_business_overperforms": [
+                    "menu_variety"
+                ],
+                "target_business_underperforms": [
+                    "pricing"
+                ],
+                "parity_areas": [],
+            },
+        },
+    )
+
+    assert profile.positive_signals == [
+        positive_signal
+    ]
+
+    assert profile.negative_signals == [
+        negative_signal
+    ]
+
+    assert profile.opportunity_signals == [
+        opportunity_signal
+    ]
+
+    assert profile.threat_signals == [
+        threat_signal
+    ]
+
+    assert (
+        profile.comparison_summary[
+            "target_business_overperforms"
+        ]
+        == [
+            "menu_variety"
+        ]
+    )
+
+
+def test_supports_legacy_theme_field_names():
+    """Older fixtures should remain compatible with the builder."""
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [
+                {
+                    "theme_category": (
+                        "cleanliness"
+                    ),
+                    "frequency": 8,
+                    "sentiment_balance": {
+                        "positive": 6,
+                        "negative": 1,
+                        "neutral": 1,
+                        "mixed": 0,
+                    },
+                    "mentions": [
+                        "legacy:1",
+                        "legacy:2",
+                    ],
+                }
+            ],
+        },
+    )
+
+    theme = profile.themes[0]
+
+    assert theme.frequency == 8
+
+    assert (
+        theme.sentiment_balance.positive
+        == 6
+    )
+
+    assert (
+        theme.sentiment_balance.negative
+        == 1
+    )
+
+
+def test_missing_frequency_uses_explicit_mention_count():
+    """Missing frequency should fall back to observed mentions."""
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [
+                {
+                    "theme_category": (
+                        "staff_behavior"
+                    ),
+                    "sentiment_distribution": {
+                        "positive": 2,
+                        "negative": 1,
+                    },
+                    "mentions": [
+                        "review:1",
+                        "review:2",
+                        "review:3",
+                    ],
+                }
+            ],
+        },
+    )
+
+    assert (
+        profile.themes[0].frequency
+        == 3
+    )
+
+
+def test_invalid_theme_without_category_is_ignored():
+    """A malformed Theme Extractor row must not enter SWOT v7."""
+
+    profile = build_swot_business_profile(
+        business_name="Example Cafe",
+        business_type="cafe",
+        themes_output={
+            "themes": [
+                {},
+                {
+                    "frequency_count": 10,
+                    "sentiment_distribution": {
+                        "positive": 10,
+                    },
+                },
+            ],
+        },
+    )
+
+    assert profile.themes == []
