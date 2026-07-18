@@ -57,3 +57,7 @@ class ThemeSelectionError(
     CreativeContextError
 ):
     """A final creative theme could not be selected safely."""
+class BusinessCreativeContextError(
+    CreativeContextError
+):
+    """Business data cannot produce a safe creative context."""
