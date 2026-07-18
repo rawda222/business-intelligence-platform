@@ -454,3 +454,131 @@ def test_image_handoff_route_is_registered():
         "image-handoff"
         in route_paths
     )
+
+@pytest.mark.asyncio
+async def test_image_handoff_endpoint_returns_compact_contract(
+    monkeypatch,
+):
+    """
+    An owned business should receive the compact image contract.
+    """
+
+    business = _business()
+    account = _account()
+
+    async def fake_get_business_by_id(
+        db,
+        business_id,
+        owner_id,
+    ):
+        assert business_id == _BUSINESS_ID
+        assert owner_id == _OWNER_ID
+
+        return business
+
+    async def fake_list_accounts(
+        db,
+        business_id,
+    ):
+        assert business_id == _BUSINESS_ID
+
+        return [account]
+
+    def fake_resolve(
+        business,
+        social_accounts,
+    ):
+        return (
+            resolve_automatic_creative_theme(
+                business=business,
+                social_accounts=(
+                    social_accounts
+                ),
+                current_time=_FIXED_TIME,
+                generated_at=_FIXED_TIME,
+            )
+        )
+
+    monkeypatch.setattr(
+        creative_themes,
+        "get_business_by_id",
+        fake_get_business_by_id,
+    )
+
+    monkeypatch.setattr(
+        creative_themes,
+        (
+            "list_active_social_"
+            "accounts_for_business"
+        ),
+        fake_list_accounts,
+    )
+
+    monkeypatch.setattr(
+        creative_themes,
+        (
+            "resolve_automatic_"
+            "creative_theme"
+        ),
+        fake_resolve,
+    )
+
+    response = await (
+        creative_themes
+        .build_image_generation_handoff(
+            business_id=_BUSINESS_ID,
+            current_user=SimpleNamespace(
+                id=_OWNER_ID
+            ),
+            db=object(),
+        )
+    )
+
+    payload = response.model_dump(
+        mode="json"
+    )
+
+    assert response.theme is not None
+
+    assert (
+        response.theme.theme_key
+        == "summer"
+    )
+
+    assert response.platform == "instagram"
+
+    assert response.product_context == "cafe"
+
+    assert "warnings" not in payload
+
+    assert "resolved_moments" not in payload
+
+    assert "rejected_moments" not in payload
+
+    assert (
+        "social_platform_context"
+        not in payload
+    )
+
+    assert (
+        "automatic_context"
+        not in payload
+    )
+
+
+def test_image_handoff_route_is_registered():
+    """The compact image handoff route should be registered."""
+
+    from app.main import app
+
+    route_paths = {
+        route.path
+        for route in app.routes
+    }
+
+    assert (
+        "/api/v1/businesses/"
+        "{business_id}/creative-themes/"
+        "image-handoff"
+        in route_paths
+    )
