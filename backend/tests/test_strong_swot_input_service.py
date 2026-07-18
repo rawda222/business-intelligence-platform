@@ -556,3 +556,53 @@ def test_profile_review_count_uses_included_voice_records():
         .target_review_count
         == 3
     )
+def test_bundle_profile_contains_grounded_generation_context():
+    """The profile sent to SWOT v7 should carry the full bundle context."""
+
+    bundle = build_strong_swot_input(
+        customer_voice=_customer_voice(),
+        trend_intelligence=(
+            _trend_intelligence()
+        ),
+        theme_extractor=(
+            _fake_theme_extractor
+        ),
+    )
+
+    profile = bundle.swot_profile
+
+    assert len(
+        profile.trend_candidates
+    ) == 1
+
+    assert (
+        profile.trend_candidates[0][
+            "evidence_references"
+        ]
+        == [
+            "insight:publishing_trend"
+        ]
+    )
+
+    assert (
+        profile.allowed_evidence_references
+        == list(
+            bundle
+            .allowed_evidence_references
+        )
+    )
+
+    assert (
+        profile.source_coverage
+        == list(
+            bundle.source_coverage
+        )
+    )
+
+    assert (
+        profile.analysis_warnings
+        == list(
+            bundle.warnings
+        )
+    )
+

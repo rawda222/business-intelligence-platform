@@ -472,6 +472,73 @@ def build_strong_swot_input(
         candidates=candidates,
     )
 
+    profile = profile.model_copy(
+        update={
+            "trend_candidates": [
+                {
+                    "candidate_id": (
+                        candidate.candidate_id
+                    ),
+                    "disposition": (
+                        candidate.disposition
+                    ),
+                    "quadrant": (
+                        candidate.quadrant
+                    ),
+                    "title": candidate.title,
+                    "statement": (
+                        candidate.statement
+                    ),
+                    "rationale": (
+                        candidate.rationale
+                    ),
+                    "confidence": (
+                        candidate.confidence
+                    ),
+                    "claim_strength": (
+                        candidate.claim_strength
+                    ),
+                    "decision": (
+                        candidate.decision
+                    ),
+                    "evidence_references": list(
+                        candidate
+                        .evidence_references
+                    ),
+                    "supporting_sources": list(
+                        candidate
+                        .supporting_sources
+                    ),
+                    "supporting_metrics": {
+                        key: value
+                        for key, value
+                        in (
+                            candidate
+                            .supporting_metrics
+                        )
+                    },
+                    "mapping_rule": (
+                        candidate.mapping_rule
+                    ),
+                    "requires_manual_review": (
+                        candidate
+                        .requires_manual_review
+                    ),
+                }
+                for candidate in candidates
+            ],
+            "allowed_evidence_references": list(
+                allowed_evidence_references
+            ),
+            "source_coverage": list(
+                source_coverage
+            ),
+            "analysis_warnings": list(
+                warnings
+            ),
+        }
+    )
+
     return StrongSwotInputBundle(
         business_id=(
             customer_voice.business_id

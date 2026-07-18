@@ -93,15 +93,64 @@ class ReviewsSummary(BaseModel):
 
 class BusinessProfile(BaseModel):
     """The complete input ingested by the SWOT agent."""
-    model_config = ConfigDict(extra="ignore")
-    
+
+    model_config = ConfigDict(
+        extra="ignore",
+    )
+
     business_name: str
+
     business_type: Optional[str] = "unknown"
-    themes: List[ReviewTheme] = Field(default_factory=list)
-    positive_signals: List[Any] = Field(default_factory=list)
-    opportunity_signals: List[Any] = Field(default_factory=list)
-    threat_signals: List[Any] = Field(default_factory=list)
-    negative_signals: List[Any] = Field(default_factory=list)
-    comparison_summary: Dict[str, List[Any]] = Field(default_factory=dict)
-    competitors: List[CompetitorProfile] = Field(default_factory=list)
-    reviews_summary: Optional[ReviewsSummary] = None
+
+    themes: List[ReviewTheme] = Field(
+        default_factory=list,
+    )
+
+    positive_signals: List[Any] = Field(
+        default_factory=list,
+    )
+
+    opportunity_signals: List[Any] = Field(
+        default_factory=list,
+    )
+
+    threat_signals: List[Any] = Field(
+        default_factory=list,
+    )
+
+    negative_signals: List[Any] = Field(
+        default_factory=list,
+    )
+
+    comparison_summary: Dict[
+        str,
+        List[Any],
+    ] = Field(
+        default_factory=dict,
+    )
+
+    competitors: List[
+        CompetitorProfile
+    ] = Field(
+        default_factory=list,
+    )
+
+    reviews_summary: Optional[
+        ReviewsSummary
+    ] = None
+
+    trend_candidates: List[Any] = Field(
+        default_factory=list,
+    )
+
+    allowed_evidence_references: List[str] = Field(
+        default_factory=list,
+    )
+
+    source_coverage: List[str] = Field(
+        default_factory=list,
+    )
+
+    analysis_warnings: List[str] = Field(
+        default_factory=list,
+    )

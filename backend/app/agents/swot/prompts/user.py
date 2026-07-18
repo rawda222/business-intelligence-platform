@@ -1,13 +1,88 @@
 """
-SWOT Agent v7 - User Prompt Builder
-====================================
-Now ENFORCES that Gemini returns evidence_refs (real quotes per item).
+SWOT Agent v7 - Grounded User Prompt Builder
+
+Builds a source-aware prompt from:
+
+- Aggregated customer-voice themes.
+- Deterministic brand-trend candidates.
+- Allowed evidence references.
+- Observed source coverage.
+- Analysis and data-quality warnings.
+
+Evidence references are stable IDs, not raw quotes.
+Representative quotes are provided separately as context.
 """
 
 import json
 from typing import Any, Dict, List
 
-from app.agents.swot.schemas.input import BusinessProfile, ReviewTheme
+from app.agents.swot.schemas.input import (
+    BusinessProfile,
+    ReviewTheme,
+)
+
+
+def _theme_payload(
+    theme: ReviewTheme,
+) -> dict[str, Any]:
+    """Serialize one evidence-backed customer theme."""
+
+    return {
+        "theme_category": (
+            theme.theme_category
+        ),
+        "entity_type": (
+            theme.entity_type
+        ),
+        "frequency": (
+            theme.frequency
+        ),
+        "sentiment_balance": {
+            "positive": (
+                theme
+                .sentiment_balance
+                .positive
+            ),
+            "negative": (
+                theme
+                .sentiment_balance
+                .negative
+            ),
+            "neutral": (
+                theme
+                .sentiment_balance
+                .neutral
+            ),
+            "mixed": (
+                theme
+                .sentiment_balance
+                .mixed
+            ),
+        },
+        "confidence_score": (
+            theme.confidence_score
+        ),
+        "source_platforms": list(
+            theme.source_platforms
+        ),
+        "representative_quotes": list(
+            theme.representative_quotes[
+                :3
+            ]
+        ),
+        "evidence_refs": list(
+            theme.evidence_refs
+        ),
+        "target_score": (
+            theme.target_score
+        ),
+        "competitor_score": (
+            theme.competitor_score
+        ),
+        "performance_gap": (
+            theme.performance_gap
+        ),
+    }
 
 
 def build_user_prompt(
@@ -15,99 +90,173 @@ def build_user_prompt(
     kept_themes: List[ReviewTheme],
     benchmark_quality: str,
     benchmark_summary: Dict[str, Any],
-    raw_reviews: List[str] = None,
+    raw_reviews: List[str] | None = None,
 ) -> str:
     """
-    Build the LLM user prompt including:
-    - Business info
-    - Themes
-    - Reviews
-    - Strict format with evidence_refs
+    Build a grounded SWOT synthesis prompt.
+
+    raw_reviews remains accepted for backward compatibility, but
+    raw review text is not included. Aggregated representative
+    quotes and stable evidence IDs are used instead.
     """
 
-    themes_payload = []
-    for t in kept_themes:
-        themes_payload.append({
-            "theme_category": t.theme_category,
-            "entity_type": t.entity_type,
-            "frequency": t.frequency,
-            "sentiment_balance": {
-                "positive": t.sentiment_balance.positive,
-                "negative": t.sentiment_balance.negative,
-                "neutral": t.sentiment_balance.neutral,
-                "mixed": t.sentiment_balance.mixed,
-            },
-        })
+    del raw_reviews
+
+    themes_payload = [
+        _theme_payload(
+            theme
+        )
+        for theme in kept_themes
+    ]
 
     prompt_data = {
-        "business_name": profile.business_name,
-        "business_type": profile.business_type,
-        "benchmark_quality": benchmark_quality,
-        "benchmark_summary": benchmark_summary,
-        "themes": themes_payload,
+        "business": {
+            "business_name": (
+                profile.business_name
+            ),
+            "business_type": (
+                profile.business_type
+            ),
+        },
+        "customer_voice_themes": (
+            themes_payload
+        ),
+        "customer_voice_signals": {
+            "positive_signals": (
+                profile.positive_signals
+            ),
+            "negative_signals": (
+                profile.negative_signals
+            ),
+            "opportunity_signals": (
+                profile.opportunity_signals
+            ),
+            "threat_signals": (
+                profile.threat_signals
+            ),
+            "comparison_summary": (
+                profile.comparison_summary
+            ),
+        },
+        "brand_trend_candidates": (
+            profile.trend_candidates
+        ),
+        "benchmark": {
+            "quality": benchmark_quality,
+            "summary": benchmark_summary,
+        },
+        "source_coverage": (
+            profile.source_coverage
+        ),
+        "allowed_evidence_references": (
+            profile
+            .allowed_evidence_references
+        ),
+        "analysis_warnings": (
+            profile.analysis_warnings
+        ),
     }
 
-    data_json = json.dumps(prompt_data, indent=2, ensure_ascii=False)
+    data_json = json.dumps(
+        prompt_data,
+        indent=2,
+        ensure_ascii=False,
+        default=str,
+    )
 
-    reviews_block = ""
-    if raw_reviews:
-        joined = "\n".join(f"- {r}" for r in raw_reviews if r)
-        reviews_block = f"\n[CUSTOMER REVIEWS]\n{joined}\n"
+    return f"""
+You are generating an evidence-grounded SWOT analysis.
 
-    user_prompt = f"""You are an AI Business Strategist.
-
-Analyze the following business and produce a SWOT analysis.
-
-BUSINESS DATA:
+GROUNDING DATA:
 {data_json}
-{reviews_block}
 
-RULES (MANDATORY):
-1. Read the CUSTOMER REVIEWS carefully.
-2. Generate SWOT (strengths, weaknesses, opportunities, threats).
-3. EACH SWOT item MUST contain:
-   - title
-   - reasoning (1-3 sentences)
-   - source_theme
-   - quadrant
-   - tags (1-5 short tags)
-   - scoring (importance, impact, confidence)
-   - evidence_refs (MAX 3 SHORT EXACT QUOTES from the reviews above)
+MANDATORY EVIDENCE RULES:
 
-4. evidence_refs MUST contain real quotes from the reviews. 
-   NEVER paraphrase. NEVER write empty arrays unless absolutely no review supports the item.
+1. Use only the supplied customer_voice_themes and
+   brand_trend_candidates.
 
-5. Reasoning MUST be supported by the evidence_refs.
+2. evidence_refs are stable IDs. Copy each ID exactly from
+   allowed_evidence_references.
+
+3. Never put quotes, paraphrases, invented IDs, URLs, or source
+   names inside evidence_refs.
+
+4. Representative quotes are context only. They may support the
+   reasoning, but they are not evidence IDs.
+
+
+5. Never invent metrics, frequencies, ratings, sources, customer
+   opinions, competitors, market conditions, or dates.
+
+6. A data gap is not a Weakness, Threat, Strength, or Opportunity.
+
+7. A supporting_signal may provide context but must not become a
+   standalone SWOT item.
+
+8. Brand-owned publishing activity is not customer sentiment.
+
+9. Strengths and Weaknesses must be grounded in target-business
+   customer themes or eligible deterministic trend candidates.
+
+10. Opportunities and Threats require comparative evidence,
+    benchmark evidence, or an explicitly eligible trend candidate.
+    If that evidence is absent, return no item for that quadrant.
+
+11. Use exact theme_category values for customer-theme
+    source_theme.
+
+12. For a trend-backed item, source_theme must start with
+    trend: followed immediately by the exact candidate_id.
+
+13. If evidence is insufficient, omit the item. Do not fill
+    quadrants merely to produce a balanced matrix.
+
+EACH SWOT ITEM MUST CONTAIN:
+
+- title
+- reasoning
+- source_theme
+- quadrant
+- tags
+- scoring:
+  - importance
+  - impact
+  - confidence
+- evidence_refs
+- frequency
 
 STRICT JSON FORMAT:
+
 {{
   "swot_report": {{
     "strengths": [
       {{
-        "title": "...",
-        "reasoning": "...",
-        "source_theme": "...",
+        "title": "Specific evidence-backed title",
+        "reasoning": "Reasoning grounded only in supplied evidence.",
+        "source_theme": "exact_theme_category_or_trend:candidate_id",
         "quadrant": "strengths",
-        "tags": ["..."],
-        "scoring": {{"importance": 8, "impact": 8, "confidence": 0.9}},
+        "tags": ["short_tag"],
+        "scoring": {{
+          "importance": 8.0,
+          "impact": 7.0,
+          "confidence": 0.85
+        }},
         "evidence_refs": [
-          "Exact quote 1",
-          "Exact quote 2"
-        ]
+          "google_maps:review:example"
+        ],
+        "frequency": 10
       }}
     ],
-    "weaknesses": [...],
-    "opportunities": [...],
-    "threats": [...]
+    "weaknesses": [],
+    "opportunities": [],
+    "threats": []
   }},
   "strategic_summary": {{
-    "main_advantage": "...",
-    "most_critical_risk": "...",
-    "best_growth_opportunity": "..."
+    "main_advantage": "",
+    "most_critical_risk": "",
+    "best_growth_opportunity": ""
   }}
 }}
 
-Return STRICT JSON only — no comments, no commentary.
-"""
-
-    return user_prompt
+Return strict JSON only.
+""".strip()
