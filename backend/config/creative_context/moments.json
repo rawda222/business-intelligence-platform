@@ -231,8 +231,11 @@
       "display_name": "Mother's Day",
       "moment_type": "commercial",
       "date_rule": {
-        "rule_type": "country_specific_date",
-        "country_event_key": "mother_day"
+        "rule_type": "fixed_annual_range",
+        "start_month": 3,
+        "start_day": 21,
+        "end_month": 3,
+        "end_day": 21
       },
       "applicable_market_groups": ["GCC", "MENA", "EMEA", "APAC"],
       "high_fit_business_types": ["retail", "hospitality", "food_and_beverage"],
@@ -350,8 +353,11 @@
       "display_name": "Saudi National Day",
       "moment_type": "national",
       "date_rule": {
-        "rule_type": "country_specific_date",
-        "country_event_key": "saudi_national_day"
+        "rule_type": "fixed_annual_range",
+        "start_month": 9,
+        "start_day": 23,
+        "end_month": 9,
+        "end_day": 23
       },
       "applicable_countries": ["SA"],
       "applicable_market_groups": [],

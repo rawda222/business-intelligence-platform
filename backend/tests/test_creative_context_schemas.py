@@ -584,3 +584,55 @@ def test_resolved_window_rejects_invalid_order():
                 "country-profile:SA:v1"
             ),
         )
+def test_evidence_references_are_unique_and_ordered():
+
+    """
+    Evidence references should be deduplicated without reordering.
+    """
+
+    moment = ResolvedMarketMoment(
+        key="summer",
+        display_name="Summer",
+        moment_type="season",
+        campaign_date=date(
+            2026,
+            7,
+            18,
+        ),
+        active_from=date(
+            2026,
+            6,
+            1,
+        ),
+        active_until=date(
+            2026,
+            8,
+            31,
+        ),
+        status="active",
+        business_fit="high",
+        eligible=True,
+        priority=70,
+        selection_score=0.955,
+        visual_tokens=[
+            "bright",
+            "fresh",
+        ],
+        avoid_elements=[],
+        reasons=[
+            "Active moment.",
+        ],
+        evidence_references=[
+            "country-profile:SA:1",
+            "moment-definition:summer:1",
+            "country-profile:SA:1",
+            "business-context:test",
+            "moment-definition:summer:1",
+        ],
+    )
+
+    assert moment.evidence_references == [
+        "country-profile:SA:1",
+        "moment-definition:summer:1",
+        "business-context:test",
+    ]

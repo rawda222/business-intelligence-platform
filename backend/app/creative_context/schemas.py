@@ -104,14 +104,63 @@ Hemisphere = Literal[
 # ============================================================
 # Base Contract Model
 # ============================================================
-class CreativeContextModel(BaseModel):
-    """Base configuration shared by all creative-context models."""
+class CreativeContextModel(
+    BaseModel
+):
+    """Base model for creative-context contracts."""
 
     model_config = ConfigDict(
         extra="forbid",
         str_strip_whitespace=True,
-        validate_assignment=True,
     )
+
+    @field_validator(
+        "evidence_references",
+        mode="before",
+        check_fields=False,
+    )
+    @classmethod
+    def deduplicate_evidence_references(
+        cls,
+        value: object,
+    ) -> object:
+        """
+        Remove duplicate evidence references while preserving order.
+
+        The validator is inherited by creative-context models that
+        define an evidence_references field.
+        """
+
+        if value is None:
+            return value
+
+        if not isinstance(
+            value,
+            (list, tuple),
+        ):
+            return value
+
+        result: list[object] = []
+
+        for item in value:
+            if not isinstance(
+                item,
+                str,
+            ):
+                if item not in result:
+                    result.append(item)
+
+                continue
+
+            cleaned = item.strip()
+
+            if (
+                cleaned
+                and cleaned not in result
+            ):
+                result.append(cleaned)
+
+        return result
 
 
 # ============================================================
@@ -1106,4 +1155,59 @@ class AutomaticCreativeThemeResponse(
 
     social_platform_context: (
         SocialPlatformContextResponse
+    )
+class ImageGenerationHandoff(
+    CreativeContextModel
+):
+    """
+    Compact contract consumed by image-generation services.
+
+    Internal resolution candidates, rejected moments, and social
+    account details are intentionally excluded.
+    """
+
+    contract_version: str = Field(
+        default="1.0",
+        pattern=r"^1\.0$",
+    )
+
+    business_id: UUID
+
+    resolution_id: UUID
+
+    generated_at: datetime
+
+    campaign_date: date
+
+    target_country_code: str = Field(
+        min_length=2,
+        max_length=2,
+    )
+
+    platform: str = Field(
+        min_length=1,
+        max_length=50,
+    )
+
+    content_format: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    objective: str = Field(
+        min_length=1,
+        max_length=100,
+    )
+
+    product_context: str | None = Field(
+        default=None,
+        max_length=500,
+    )
+
+    theme: CreativeThemeBrief | None = None
+
+    fallback: ThemeFallback
+
+    evidence_references: list[str] = Field(
+        default_factory=list,
     )

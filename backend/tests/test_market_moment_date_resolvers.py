@@ -43,15 +43,14 @@ def moment_registry():
 
 
 def test_default_override_registry_loads():
-    """The empty production override registry should load."""
-
+    """The production override registry should load."""
     overrides = (
         load_default_moment_overrides()
     )
 
     assert (
         overrides.registry_version
-        == "1.0"
+        == "1.1"
     )
 
 
@@ -310,15 +309,15 @@ def test_country_specific_date_requires_override(
     ):
         resolve_moment_window(
             moment=moment_registry.get(
-                "saudi_national_day"
+                "graduation"
             ),
             country=country_registry.get(
                 "SA"
             ),
             campaign_date=date(
                 2026,
-                9,
-                23,
+                6,
+                1,
             ),
         )
 
@@ -343,14 +342,14 @@ def test_country_year_override_takes_precedence(
                     {
                         "country_code": "SA",
                         "moment_key": (
-                            "saudi_national_day"
+                            "back_to_school"
                         ),
                         "year": 2026,
                         "active_from": (
-                            "2026-09-20"
+                            "2026-08-20"
                         ),
                         "active_until": (
-                            "2026-09-23"
+                            "2026-08-23"
                         ),
                         "source": (
                             "test_calendar"
@@ -372,14 +371,14 @@ def test_country_year_override_takes_precedence(
 
     window = resolve_moment_window(
         moment=moment_registry.get(
-            "saudi_national_day"
+            "back_to_school"
         ),
         country=country_registry.get(
             "SA"
         ),
         campaign_date=date(
             2026,
-            9,
+            8,
             22,
         ),
         overrides=overrides,
@@ -394,7 +393,7 @@ def test_country_year_override_takes_precedence(
 
     assert window.active_from == date(
         2026,
-        9,
+        8,
         20,
     )
 
@@ -441,3 +440,177 @@ def test_duplicate_override_is_rejected(
                 path
             )
         )
+def test_sa_back_to_school_uses_2026_override(
+    country_registry,
+    moment_registry,
+):
+    """Saudi back-to-school should use the approved 2026 date."""
+
+    window = resolve_moment_window(
+        moment=moment_registry.get(
+            "back_to_school"
+        ),
+        country=country_registry.get(
+            "SA"
+        ),
+        campaign_date=date(
+            2026,
+            8,
+            23,
+        ),
+    )
+
+    assert window.status == "active"
+
+    assert (
+        window.date_source
+        == "country_year_override"
+    )
+
+    assert window.active_from == date(
+        2026,
+        8,
+        23,
+    )
+
+    assert window.active_until == date(
+        2026,
+        8,
+        23,
+    )
+
+
+def test_sa_black_friday_uses_2026_override(
+    country_registry,
+    moment_registry,
+):
+    """Saudi Black Friday should use the approved 2026 date."""
+
+    window = resolve_moment_window(
+        moment=moment_registry.get(
+            "black_friday"
+        ),
+        country=country_registry.get(
+            "SA"
+        ),
+        campaign_date=date(
+            2026,
+            11,
+            27,
+        ),
+    )
+
+    assert window.status == "active"
+
+    assert (
+        window.date_source
+        == "country_year_override"
+    )
+
+
+def test_sa_white_friday_uses_product_policy_override(
+    country_registry,
+    moment_registry,
+):
+    """Saudi White Friday should follow the approved product policy."""
+
+    window = resolve_moment_window(
+        moment=moment_registry.get(
+            "white_friday"
+        ),
+        country=country_registry.get(
+            "SA"
+        ),
+        campaign_date=date(
+            2026,
+            11,
+            27,
+        ),
+    )
+
+    assert window.status == "active"
+
+    assert (
+        window.date_source
+        == "country_year_override"
+    )
+
+
+def test_mother_day_uses_fixed_annual_date(
+    country_registry,
+    moment_registry,
+):
+    """Mother's Day should resolve annually on March 21."""
+
+    window = resolve_moment_window(
+        moment=moment_registry.get(
+            "mother_day"
+        ),
+        country=country_registry.get(
+            "SA"
+        ),
+        campaign_date=date(
+            2026,
+            3,
+            21,
+        ),
+    )
+
+    assert window.status == "active"
+
+    assert window.active_from == date(
+        2026,
+        3,
+        21,
+    )
+
+    assert window.active_until == date(
+        2026,
+        3,
+        21,
+    )
+
+    assert (
+    window.date_source
+    == "fixed_annual_range"
+)
+
+
+def test_saudi_national_day_uses_fixed_annual_date(
+    country_registry,
+    moment_registry,
+):
+    """Saudi National Day should resolve annually on September 23."""
+
+    window = resolve_moment_window(
+        moment=moment_registry.get(
+            "saudi_national_day"
+        ),
+        country=country_registry.get(
+            "SA"
+        ),
+        campaign_date=date(
+            2026,
+            9,
+            23,
+        ),
+    )
+
+    assert window.status == "active"
+
+    assert window.active_from == date(
+        2026,
+        9,
+        23,
+    )
+
+    assert window.active_until == date(
+        2026,
+        9,
+        23,
+    )
+
+    assert (
+        window.date_source
+        == "fixed_annual_range"
+    )

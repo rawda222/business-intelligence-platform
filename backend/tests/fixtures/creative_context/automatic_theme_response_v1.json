@@ -102,7 +102,6 @@
       "evidence_references": [
         "country-profile:SA:1",
         "moment-definition:summer:1",
-        "country-profile:SA:1",
         "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
       ],
       "market_groups": [
@@ -126,7 +125,7 @@
       "valid_from": "2026-06-01",
       "valid_until": "2026-08-31"
     },
-    "registry_version": "countries:1.0;moments:1.0;overrides:1.0",
+    "registry_version": "countries:1.0;moments:1.0;overrides:1.1",
     "rejected_moments": [
       {
         "business_fit": "medium",
@@ -139,14 +138,14 @@
         "business_fit": "medium",
         "display_name": "Back to School",
         "key": "back_to_school",
-        "reason": "Country-specific moment 'back_to_school' requires a country/year override.",
+        "reason": "The moment is not active or upcoming for the campaign date.",
         "status": "inactive"
       },
       {
         "business_fit": "medium",
         "display_name": "Black Friday",
         "key": "black_friday",
-        "reason": "Country-specific moment 'black_friday' requires a country/year override.",
+        "reason": "The moment is not active or upcoming for the campaign date.",
         "status": "inactive"
       },
       {
@@ -174,7 +173,7 @@
         "business_fit": "high",
         "display_name": "Mother's Day",
         "key": "mother_day",
-        "reason": "Country-specific moment 'mother_day' requires a country/year override.",
+        "reason": "The moment is not active or upcoming for the campaign date.",
         "status": "inactive"
       },
       {
@@ -195,7 +194,7 @@
         "business_fit": "high",
         "display_name": "Saudi National Day",
         "key": "saudi_national_day",
-        "reason": "Country-specific moment 'saudi_national_day' requires a country/year override.",
+        "reason": "The moment is not active or upcoming for the campaign date.",
         "status": "inactive"
       },
       {
@@ -223,7 +222,7 @@
         "business_fit": "medium",
         "display_name": "White Friday",
         "key": "white_friday",
-        "reason": "Country-specific moment 'white_friday' requires a country/year override.",
+        "reason": "The moment is not active or upcoming for the campaign date.",
         "status": "inactive"
       },
       {
@@ -259,7 +258,6 @@
         "evidence_references": [
           "country-profile:SA:1",
           "moment-definition:summer:1",
-          "country-profile:SA:1",
           "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
         ],
         "key": "summer",
@@ -313,6 +311,41 @@
           "evening",
           "hospitality",
           "gathering"
+        ]
+      },
+      {
+        "active_from": "2026-09-23",
+        "active_until": "2026-09-23",
+        "avoid_elements": [
+          "incorrect official symbols",
+          "unauthorized emblem usage"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Saudi National Day",
+        "eligible": false,
+        "evidence_references": [
+          "moment:saudi_national_day:1",
+          "moment-definition:saudi_national_day:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "saudi_national_day",
+        "moment_type": "national",
+        "priority": 95,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "national",
+          "celebratory",
+          "premium",
+          "community"
         ]
       },
       {
@@ -386,6 +419,76 @@
         ]
       },
       {
+        "active_from": "2026-11-27",
+        "active_until": "2026-11-27",
+        "avoid_elements": [
+          "fake discounts",
+          "unsupported urgency claims"
+        ],
+        "business_fit": "medium",
+        "campaign_date": "2026-07-18",
+        "display_name": "White Friday",
+        "eligible": false,
+        "evidence_references": [
+          "moment-override:SA:white_friday:2026:1",
+          "moment-definition:white_friday:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "white_friday",
+        "moment_type": "commercial",
+        "priority": 85,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has medium fit for the business type.",
+          "The campaign objective is not supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "bold",
+          "clean",
+          "high_contrast",
+          "commercial"
+        ]
+      },
+      {
+        "active_from": "2026-11-27",
+        "active_until": "2026-11-27",
+        "avoid_elements": [
+          "fake discounts",
+          "unsupported urgency claims"
+        ],
+        "business_fit": "medium",
+        "campaign_date": "2026-07-18",
+        "display_name": "Black Friday",
+        "eligible": false,
+        "evidence_references": [
+          "moment-override:SA:black_friday:2026:1",
+          "moment-definition:black_friday:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "black_friday",
+        "moment_type": "commercial",
+        "priority": 80,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has medium fit for the business type.",
+          "The campaign objective is not supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "bold",
+          "high_contrast",
+          "urgent",
+          "commercial"
+        ]
+      },
+      {
         "active_from": "2026-12-15",
         "active_until": "2027-01-01",
         "avoid_elements": [
@@ -417,6 +520,75 @@
           "renewal",
           "premium",
           "optimistic"
+        ]
+      },
+      {
+        "active_from": "2026-08-23",
+        "active_until": "2026-08-23",
+        "avoid_elements": [
+          "age stereotypes",
+          "unsupported education claims"
+        ],
+        "business_fit": "medium",
+        "campaign_date": "2026-07-18",
+        "display_name": "Back to School",
+        "eligible": false,
+        "evidence_references": [
+          "moment-override:SA:back_to_school:2026:1",
+          "moment-definition:back_to_school:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "back_to_school",
+        "moment_type": "education",
+        "priority": 70,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has medium fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "organized",
+          "energetic",
+          "practical",
+          "fresh"
+        ]
+      },
+      {
+        "active_from": "2026-03-21",
+        "active_until": "2026-03-21",
+        "avoid_elements": [
+          "family stereotypes"
+        ],
+        "business_fit": "high",
+        "campaign_date": "2026-07-18",
+        "display_name": "Mother's Day",
+        "eligible": false,
+        "evidence_references": [
+          "moment:mother_day:1",
+          "moment-definition:mother_day:1",
+          "country-profile:SA:1",
+          "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        ],
+        "key": "mother_day",
+        "moment_type": "commercial",
+        "priority": 65,
+        "reasons": [
+          "The campaign date is outside the lead, active, and cooldown windows.",
+          "The target country is inside the configured moment scope.",
+          "The moment has high fit for the business type.",
+          "The campaign objective is supported by the moment."
+        ],
+        "selection_score": 0.0,
+        "status": "inactive",
+        "visual_tokens": [
+          "warm",
+          "appreciative",
+          "giftable",
+          "soft"
         ]
       },
       {
@@ -467,7 +639,6 @@
         "evidence_references": [
           "country-profile:SA:1",
           "moment-definition:winter:1",
-          "country-profile:SA:1",
           "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
         ],
         "key": "winter",
@@ -501,7 +672,6 @@
         "evidence_references": [
           "country-profile:SA:1",
           "moment-definition:spring:1",
-          "country-profile:SA:1",
           "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
         ],
         "key": "spring",
@@ -535,7 +705,6 @@
         "evidence_references": [
           "country-profile:SA:1",
           "moment-definition:autumn:1",
-          "country-profile:SA:1",
           "business-context:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
         ],
         "key": "autumn",
@@ -559,12 +728,7 @@
     ],
     "secondary_accents": [],
     "warnings": [
-      "back_to_school: Country-specific moment 'back_to_school' requires a country/year override.",
-      "black_friday: Country-specific moment 'black_friday' requires a country/year override.",
-      "graduation: Country-specific moment 'graduation' requires a country/year override.",
-      "mother_day: Country-specific moment 'mother_day' requires a country/year override.",
-      "saudi_national_day: Country-specific moment 'saudi_national_day' requires a country/year override.",
-      "white_friday: Country-specific moment 'white_friday' requires a country/year override."
+      "graduation: Country-specific moment 'graduation' requires a country/year override."
     ]
   }
 }

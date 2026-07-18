@@ -207,7 +207,7 @@ def test_service_exposes_combined_registry_versions():
         == (
             "countries:1.0;"
             "moments:1.0;"
-            "overrides:1.0"
+            "overrides:1.1"
         )
     )
 
