@@ -1,7 +1,7 @@
 """
 Automatic Creative Theme Endpoints
 
-Provides two authenticated business-scoped creative-theme views:
+Provides two authenticated, business-scoped creative-theme views:
 
 - Full automatic resolution for internal audit and diagnostics.
 - Compact image-generation handoff for downstream image services.
@@ -28,9 +28,6 @@ from app.creative_context.automatic_service import (
 )
 from app.creative_context.exceptions import (
     CreativeContextError,
-)
-from app.creative_context.image_handoff_mapper import (
-    map_image_generation_handoff,
 )
 from app.creative_context.image_handoff_mapper import (
     map_image_generation_handoff,
@@ -68,66 +65,10 @@ async def _resolve_full_response(
     db: AsyncSession,
 ) -> AutomaticCreativeThemeResponse:
     """
-    Resolve the authenticated business into the full public contract.
-
-    A 404 response is used for both missing and cross-tenant
-    businesses so that tenant existence is not disclosed.
-    """
-
-    business = await get_business_by_id(
-        db=db,
-        business_id=business_id,
-        owner_id=current_user.id,
-    )
-
-    if business is None:
-        raise HTTPException(
-            status_code=(
-                status.HTTP_404_NOT_FOUND
-            ),
-            detail="Business not found",
-        )
-
-    social_accounts = await (
-        list_active_social_accounts_for_business(
-            db=db,
-            business_id=business.id,
-        )
-    )
-
-    try:
-        internal_result = (
-            resolve_automatic_creative_theme(
-                business=business,
-                social_accounts=(
-                    social_accounts
-                ),
-            )
-        )
-    except CreativeContextError as error:
-        raise HTTPException(
-            status_code=(
-                status.HTTP_422_UNPROCESSABLE_ENTITY
-            ),
-            detail=str(error),
-        ) from error
-
-    return (
-        map_automatic_creative_theme_response(
-            internal_result
-        )
-    )
-
-async def _resolve_full_response(
-    business_id: UUID,
-    current_user: User,
-    db: AsyncSession,
-) -> AutomaticCreativeThemeResponse:
-    """
     Resolve one authenticated business into the full contract.
 
-    Missing and cross-tenant businesses return the same 404
-    response to preserve tenant isolation.
+    Missing and cross-tenant businesses return the same 404 response
+    to preserve tenant isolation.
     """
 
     business = await get_business_by_id(
@@ -165,14 +106,15 @@ async def _resolve_full_response(
             status_code=(
                 status.HTTP_422_UNPROCESSABLE_ENTITY
             ),
-            detail=str(error),
+            detail=str(
+                error
+            ),
         ) from error
 
-    return (
-        map_automatic_creative_theme_response(
-            internal_result
-        )
+    return map_automatic_creative_theme_response(
+        internal_result
     )
+
 
 @router.post(
     "/auto-resolve",
@@ -227,49 +169,8 @@ async def build_image_generation_handoff(
     """
     Return the compact contract consumed by image services.
 
-    The response intentionally excludes:
-
-    - Rejected moments.
-    - Inactive moment candidates.
-    - Registry warnings.
-    - Social-account identifiers.
-    - Internal automatic-context diagnostics.
-    """
-
-    full_response = await (
-        _resolve_full_response(
-            business_id=business_id,
-            current_user=current_user,
-            db=db,
-        )
-    )
-
-    return map_image_generation_handoff(
-        full_response
-    )
-
-@router.post(
-    "/image-handoff",
-    response_model=ImageGenerationHandoff,
-    status_code=status.HTTP_200_OK,
-    summary=(
-        "Build image-generation handoff"
-    ),
-)
-async def build_image_generation_handoff(
-    business_id: UUID,
-    current_user: User = Depends(
-        get_current_user
-    ),
-    db: AsyncSession = Depends(
-        get_db
-    ),
-) -> ImageGenerationHandoff:
-    """
-    Return the compact contract consumed by image services.
-
     Internal diagnostics, rejected moments, inactive candidates,
-    registry warnings, and social-account IDs are excluded.
+    registry warnings, and social-account identifiers are excluded.
     """
 
     full_response = await (
