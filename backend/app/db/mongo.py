@@ -48,6 +48,9 @@ async def connect_to_mongo():
     from app.models.mongo.strategy_report import (
         StrategyReportDocument,
     )
+    from app.models.mongo.swot_update_proposal import (
+    SwotUpdateProposalDocument,
+  )
     from app.models.mongo.swot_report import (
         SWOTReportDocument,
     )
@@ -59,6 +62,7 @@ async def connect_to_mongo():
         SocialCommentDocument,
         CustomerReviewDocument,
         PostMetricSnapshotDocument,
+        SwotUpdateProposalDocument,
     ]
 
     mongo_manager.client = AsyncIOMotorClient(
