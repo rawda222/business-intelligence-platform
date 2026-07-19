@@ -18,11 +18,12 @@ from app.api.v1 import (
     analysis,
     auth,
     businesses,
+    creative_themes,
     full_pipeline,
     reports,
     social_accounts,
     swot,
-    creative_themes,
+    swot_updates,
 )
 from app.core.config import settings
 from app.db.mongo import (
@@ -121,7 +122,10 @@ app.include_router(
     swot.router,
     prefix=settings.API_V1_PREFIX,
 )
-
+app.include_router(
+    swot_updates.router,
+    prefix=settings.API_V1_PREFIX,
+)
 app.include_router(
     analysis.router,
     prefix=settings.API_V1_PREFIX,
