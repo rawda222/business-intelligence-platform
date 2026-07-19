@@ -13,7 +13,15 @@ from app.agents.strategy.schemas.actions import PriorityAction
 from app.agents.strategy.schemas.resources import ResourceAssessmentEntry
 from app.agents.strategy.schemas.campaign import CampaignBriefFeedItem
 from app.agents.strategy.schemas.quality import StrategyQualityReport
-
+from app.agents.strategy.schemas.brand_foundation import (
+    AudienceSegment,
+    ChannelStrategy,
+    ContentPillarStrategy,
+    PositioningStrategy,
+    StrategyGoal,
+    ToneOfVoiceStrategy,
+    ValuePropositionStrategy,
+)
 
 class StrategyOutput(BaseModel):
     """Top-level output of the Strategy Agent."""
@@ -23,6 +31,39 @@ class StrategyOutput(BaseModel):
     engine_version: str = ENGINE_VERSION
     strategic_posture: str = StrategicPosture.BALANCED
     posture_rationale: str = ""
+    positioning: PositioningStrategy = Field(
+        default_factory=PositioningStrategy,
+    )
+
+    audience: List[AudienceSegment] = Field(
+        default_factory=list,
+    )
+
+    value_proposition: (
+        ValuePropositionStrategy
+    ) = Field(
+        default_factory=(
+            ValuePropositionStrategy
+        ),
+    )
+
+    tone_of_voice: ToneOfVoiceStrategy = Field(
+        default_factory=ToneOfVoiceStrategy,
+    )
+
+    content_pillars: List[
+        ContentPillarStrategy
+    ] = Field(
+        default_factory=list,
+    )
+
+    channels: List[ChannelStrategy] = Field(
+        default_factory=list,
+    )
+
+    goals: List[StrategyGoal] = Field(
+        default_factory=list,
+    )
     tows_matrix: TOWSMatrix = Field(default_factory=TOWSMatrix)
     priority_action_plan: List[PriorityAction] = Field(default_factory=list)
     resource_assessment: List[ResourceAssessmentEntry] = Field(default_factory=list)

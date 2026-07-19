@@ -10,6 +10,16 @@ from app.agents.strategy.schemas.resources import ResourceAssessmentEntry
 from app.agents.strategy.schemas.campaign import CampaignBriefFeedItem
 from app.agents.strategy.schemas.quality import StrategyQualityReport
 from app.agents.strategy.schemas.output import StrategyOutput
+from app.agents.strategy.schemas.brand_foundation import (
+    AudienceSegment,
+    BrandStrategyFoundation,
+    ChannelStrategy,
+    ContentPillarStrategy,
+    PositioningStrategy,
+    StrategyGoal,
+    ToneOfVoiceStrategy,
+    ValuePropositionStrategy,
+)
 
 __all__ = [
     "StrategyAnchor",
@@ -20,4 +30,12 @@ __all__ = [
     "CampaignBriefFeedItem",
     "StrategyQualityReport",
     "StrategyOutput",
+    "AudienceSegment",
+    "BrandStrategyFoundation",
+    "ChannelStrategy",
+    "ContentPillarStrategy",
+    "PositioningStrategy",
+    "StrategyGoal",
+    "ToneOfVoiceStrategy",
+    "ValuePropositionStrategy",
 ]

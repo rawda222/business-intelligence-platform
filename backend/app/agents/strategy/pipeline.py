@@ -3,36 +3,34 @@ Strategy Agent v1 - Main Pipeline
 ==================================
 Orchestrates the full strategy generation process.
 """
-import time
+
 import logging
+import time
 from typing import Any
 
-from app.agents.strategy.schemas.output import StrategyOutput
-
-# Reuse SWOT LLM chain
-from app.agents.swot.llm.chain import call_llm_chain
-from app.agents.swot.utils.json_parser import safe_parse_json
-
+from app.agents.strategy.enums import StrategicPosture
 from app.agents.strategy.filtering import filter_strategy_inputs
-from app.agents.strategy.prompts import (
-    STRATEGY_SYSTEM_PROMPT,
-    build_strategy_user_prompt,
-)
 from app.agents.strategy.outputs import (
     build_blocked_output,
     build_dry_run_output,
 )
 from app.agents.strategy.post_processor import (
-    classify_strategic_posture,
-    build_tows_matrix,
+    build_brand_strategy_foundation,
+    build_campaign_feed,
     build_priority_actions,
     build_resource_assessment,
-    build_campaign_feed,
+    build_tows_matrix,
+    classify_strategic_posture,
     validate_strategy_output,
 )
+from app.agents.strategy.prompts import (
+    STRATEGY_SYSTEM_PROMPT,
+    build_strategy_user_prompt,
+)
+from app.agents.strategy.schemas.output import StrategyOutput
 from app.agents.strategy.utils import collect_valid_item_ids
-from app.agents.strategy.enums import StrategicPosture
-
+from app.agents.swot.llm.chain import call_llm_chain
+from app.agents.swot.utils.json_parser import safe_parse_json
 
 logger = logging.getLogger("strategy_agent_v1")
 
@@ -93,6 +91,11 @@ class StrategyAgent:
 
         posture = classify_strategic_posture(filtered)
 
+        brand_foundation = build_brand_strategy_foundation(
+            parsed,
+            valid_ids,
+        )
+
         # =========================================================
         # Step 6: Build Output
         # =========================================================
@@ -100,6 +103,13 @@ class StrategyAgent:
             business_type=filtered.get("business_type", "unknown"),
             strategic_posture=posture,
             posture_rationale=f"Auto-detected posture: {posture}",
+            positioning=brand_foundation.positioning,
+            audience=brand_foundation.audience,
+            value_proposition=brand_foundation.value_proposition,
+            tone_of_voice=brand_foundation.tone_of_voice,
+            content_pillars=brand_foundation.content_pillars,
+            channels=brand_foundation.channels,
+            goals=brand_foundation.goals,
             tows_matrix=tows_matrix,
             priority_action_plan=actions,
             resource_assessment=resources,
@@ -107,7 +117,7 @@ class StrategyAgent:
             meta={
                 "processing_time_ms": int((time.time() - start) * 1000),
                 "llm_used": True,
-            }
+            },
         )
 
         # =========================================================
