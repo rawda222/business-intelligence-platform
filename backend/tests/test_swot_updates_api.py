@@ -31,7 +31,9 @@ _BASE_REPORT_ID = UUID(
 _PROPOSAL_ID = UUID(
     "44444444-5555-6666-7777-888888888888"
 )
-
+_APPROVED_REPORT_ID = UUID(
+    "55555555-6666-7777-8888-999999999999"
+)
 _RANGE_START = datetime(
     2026,
     6,
@@ -473,4 +475,517 @@ async def test_missing_proposal_returns_404(
     assert (
         error_info.value.detail
         == "SWOT update proposal not found"
+    )
+@pytest.mark.asyncio
+async def test_owner_can_approve_proposal(
+    monkeypatch,
+):
+    """An owner can approve a draft SWOT proposal."""
+
+    async def fake_get_business_by_id(
+        **kwargs,
+    ):
+        return _business()
+
+    async def fake_approval_workflow(
+        **kwargs,
+    ):
+        assert kwargs[
+            "business_id"
+        ] == _BUSINESS_ID
+
+        assert kwargs[
+            "proposal_id"
+        ] == _PROPOSAL_ID
+
+        assert kwargs[
+            "business_type"
+        ] == "cafe"
+
+        assert kwargs[
+            "decision_values"
+        ] == (
+            {
+                "candidate_id": (
+                    "grounded:service-delay"
+                ),
+                "decision": "approve",
+            },
+        )
+
+        approved_update = SimpleNamespace(
+            approval_complete=True,
+            ready_for_strategy=True,
+            approved_candidate_ids=(
+                "grounded:service-delay",
+            ),
+            rejected_candidate_ids=(),
+            unresolved_candidate_ids=(),
+            source_coverage=(
+                "business_profile",
+                "google_maps_reviews",
+                "facebook",
+                "instagram",
+            ),
+            warnings=(),
+        )
+
+        approved_report = SimpleNamespace(
+            report_id=(
+                _APPROVED_REPORT_ID
+            ),
+            engine_version="8.0",
+            swot_report={
+                "strengths": [],
+                "weaknesses": [
+                    {
+                        "item_id": "W_001",
+                        "title": (
+                            "Recurring service delays"
+                        ),
+                    }
+                ],
+                "opportunities": [],
+                "threats": [],
+            },
+            validation_results={
+                "overall_status": "PASS",
+            },
+            created_at=_UPDATED_AT,
+        )
+
+        persisted_proposal = (
+            SimpleNamespace(
+                status="approved",
+            )
+        )
+
+        return SimpleNamespace(
+            business_id=_BUSINESS_ID,
+            proposal_id=_PROPOSAL_ID,
+            approved_report_id=(
+                _APPROVED_REPORT_ID
+            ),
+            approved_update=(
+                approved_update
+            ),
+            approved_report=(
+                approved_report
+            ),
+            persisted_proposal=(
+                persisted_proposal
+            ),
+        )
+
+    monkeypatch.setattr(
+        api,
+        "get_business_by_id",
+        fake_get_business_by_id,
+    )
+
+    monkeypatch.setattr(
+        api,
+        (
+            "approve_swot_update_"
+            "proposal_workflow"
+        ),
+        fake_approval_workflow,
+    )
+
+    request = (
+        api.SwotProposalApproveRequest(
+            decisions=[
+                (
+                    api
+                    .SwotApprovalDecisionRequest(
+                        candidate_id=(
+                            "grounded:"
+                            "service-delay"
+                        ),
+                        decision="approve",
+                    )
+                )
+            ]
+        )
+    )
+
+    response = await (
+        api.approve_swot_update_proposal(
+            business_id=_BUSINESS_ID,
+            proposal_id=_PROPOSAL_ID,
+            request=request,
+            current_user=_user(),
+            db="fake-db",
+        )
+    )
+
+    assert response[
+        "business_id"
+    ] == str(
+        _BUSINESS_ID
+    )
+
+    assert response[
+        "proposal_id"
+    ] == str(
+        _PROPOSAL_ID
+    )
+
+    assert response[
+        "approved_report_id"
+    ] == str(
+        _APPROVED_REPORT_ID
+    )
+
+    assert (
+        response["proposal_status"]
+        == "approved"
+    )
+
+    assert response[
+        "approval_complete"
+    ]
+
+    assert response[
+        "ready_for_strategy"
+    ]
+
+    assert response[
+        "approved_candidate_ids"
+    ] == [
+        "grounded:service-delay",
+    ]
+
+    assert response[
+        "unresolved_candidate_ids"
+    ] == []
+
+    assert (
+        response[
+            "validation_results"
+        ]["overall_status"]
+        == "PASS"
+    )
+
+
+@pytest.mark.asyncio
+async def test_non_owner_cannot_approve_proposal(
+    monkeypatch,
+):
+    """A non-owner cannot reach the approval workflow."""
+
+    workflow_called = False
+
+    async def fake_get_business_by_id(
+        **kwargs,
+    ):
+        return None
+
+    async def fake_approval_workflow(
+        **kwargs,
+    ):
+        nonlocal workflow_called
+
+        workflow_called = True
+
+    monkeypatch.setattr(
+        api,
+        "get_business_by_id",
+        fake_get_business_by_id,
+    )
+
+    monkeypatch.setattr(
+        api,
+        (
+            "approve_swot_update_"
+            "proposal_workflow"
+        ),
+        fake_approval_workflow,
+    )
+
+    request = (
+        api.SwotProposalApproveRequest(
+            decisions=[
+                (
+                    api
+                    .SwotApprovalDecisionRequest(
+                        candidate_id=(
+                            "grounded:"
+                            "service-delay"
+                        ),
+                        decision="approve",
+                    )
+                )
+            ]
+        )
+    )
+
+    with pytest.raises(
+        HTTPException,
+    ) as error_info:
+        await (
+            api.approve_swot_update_proposal(
+                business_id=(
+                    _BUSINESS_ID
+                ),
+                proposal_id=(
+                    _PROPOSAL_ID
+                ),
+                request=request,
+                current_user=_user(),
+                db="fake-db",
+            )
+        )
+
+    assert (
+        error_info.value.status_code
+        == 404
+    )
+
+    assert (
+        error_info.value.detail
+        == "Business not found"
+    )
+
+    assert not workflow_called
+
+
+@pytest.mark.asyncio
+async def test_missing_approval_proposal_returns_404(
+    monkeypatch,
+):
+    """A missing proposal maps to HTTP 404."""
+
+    async def fake_get_business_by_id(
+        **kwargs,
+    ):
+        return _business()
+
+    async def fake_approval_workflow(
+        **kwargs,
+    ):
+        raise ValueError(
+            "SWOT update proposal was not found."
+        )
+
+    monkeypatch.setattr(
+        api,
+        "get_business_by_id",
+        fake_get_business_by_id,
+    )
+
+    monkeypatch.setattr(
+        api,
+        (
+            "approve_swot_update_"
+            "proposal_workflow"
+        ),
+        fake_approval_workflow,
+    )
+
+    request = (
+        api.SwotProposalApproveRequest(
+            decisions=[
+                (
+                    api
+                    .SwotApprovalDecisionRequest(
+                        candidate_id=(
+                            "grounded:"
+                            "service-delay"
+                        ),
+                        decision="approve",
+                    )
+                )
+            ]
+        )
+    )
+
+    with pytest.raises(
+        HTTPException,
+    ) as error_info:
+        await (
+            api.approve_swot_update_proposal(
+                business_id=(
+                    _BUSINESS_ID
+                ),
+                proposal_id=(
+                    _PROPOSAL_ID
+                ),
+                request=request,
+                current_user=_user(),
+                db="fake-db",
+            )
+        )
+
+    assert (
+        error_info.value.status_code
+        == 404
+    )
+
+    assert (
+        error_info.value.detail
+        == (
+            "SWOT update proposal "
+            "was not found."
+        )
+    )
+
+
+@pytest.mark.asyncio
+async def test_non_draft_approval_returns_409(
+    monkeypatch,
+):
+    """Repeated approval maps to HTTP 409 Conflict."""
+
+    async def fake_get_business_by_id(
+        **kwargs,
+    ):
+        return _business()
+
+    async def fake_approval_workflow(
+        **kwargs,
+    ):
+        raise ValueError(
+            "Only draft SWOT update proposals "
+            "may be approved."
+        )
+
+    monkeypatch.setattr(
+        api,
+        "get_business_by_id",
+        fake_get_business_by_id,
+    )
+
+    monkeypatch.setattr(
+        api,
+        (
+            "approve_swot_update_"
+            "proposal_workflow"
+        ),
+        fake_approval_workflow,
+    )
+
+    request = (
+        api.SwotProposalApproveRequest(
+            decisions=[
+                (
+                    api
+                    .SwotApprovalDecisionRequest(
+                        candidate_id=(
+                            "grounded:"
+                            "service-delay"
+                        ),
+                        decision="approve",
+                    )
+                )
+            ]
+        )
+    )
+
+    with pytest.raises(
+        HTTPException,
+    ) as error_info:
+        await (
+            api.approve_swot_update_proposal(
+                business_id=(
+                    _BUSINESS_ID
+                ),
+                proposal_id=(
+                    _PROPOSAL_ID
+                ),
+                request=request,
+                current_user=_user(),
+                db="fake-db",
+            )
+        )
+
+    assert (
+        error_info.value.status_code
+        == 409
+    )
+
+    assert (
+        "Only draft"
+        in error_info.value.detail
+    )
+
+
+@pytest.mark.asyncio
+async def test_incomplete_approval_returns_422(
+    monkeypatch,
+):
+    """Incomplete decisions map to HTTP 422."""
+
+    async def fake_get_business_by_id(
+        **kwargs,
+    ):
+        return _business()
+
+    async def fake_approval_workflow(
+        **kwargs,
+    ):
+        raise ValueError(
+            "Approval decisions are incomplete."
+        )
+
+    monkeypatch.setattr(
+        api,
+        "get_business_by_id",
+        fake_get_business_by_id,
+    )
+
+    monkeypatch.setattr(
+        api,
+        (
+            "approve_swot_update_"
+            "proposal_workflow"
+        ),
+        fake_approval_workflow,
+    )
+
+    request = (
+        api.SwotProposalApproveRequest(
+            decisions=[
+                (
+                    api
+                    .SwotApprovalDecisionRequest(
+                        candidate_id=(
+                            "grounded:"
+                            "service-delay"
+                        ),
+                        decision="approve",
+                    )
+                )
+            ]
+        )
+    )
+
+    with pytest.raises(
+        HTTPException,
+    ) as error_info:
+        await (
+            api.approve_swot_update_proposal(
+                business_id=(
+                    _BUSINESS_ID
+                ),
+                proposal_id=(
+                    _PROPOSAL_ID
+                ),
+                request=request,
+                current_user=_user(),
+                db="fake-db",
+            )
+        )
+
+    assert (
+        error_info.value.status_code
+        == 422
+    )
+
+    assert (
+        error_info.value.detail
+        == (
+            "Approval decisions are "
+            "incomplete."
+        )
     )

@@ -1,13 +1,15 @@
 """
 Grounded SWOT Update API
 
-Creates and retrieves tenant-scoped draft SWOT update proposals.
+Creates, retrieves, and approves tenant-scoped grounded SWOT
+update proposals.
 
-The API does not approve proposals and does not run Strategy.
+Strategy generation remains a separate workflow and consumes only
+a persisted, approved, Strategy-ready SWOT report.
 """
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 from uuid import UUID
 
 from fastapi import (
@@ -26,6 +28,9 @@ from app.db.postgres import get_db
 from app.models.pg.user import User
 from app.services.business_service import (
     get_business_by_id,
+)
+from app.services.swot_approval_workflow_service import (
+    approve_swot_update_proposal_workflow,
 )
 from app.services.swot_strategy_persistence_service import (
     get_swot_update_proposal,
@@ -46,6 +51,9 @@ router = APIRouter(
 )
 
 
+# ============================================================
+# Request Schemas
+# ============================================================
 class SwotProposalCreateRequest(BaseModel):
     """Request for one grounded SWOT update proposal."""
 
@@ -66,6 +74,35 @@ class SwotProposalCreateRequest(BaseModel):
     )
 
 
+class SwotApprovalDecisionRequest(BaseModel):
+    """One explicit human decision for one proposal candidate."""
+
+    candidate_id: str = Field(
+        min_length=1,
+        max_length=500,
+    )
+
+    decision: Literal[
+        "approve",
+        "reject",
+        "keep_baseline",
+        "accept_candidate",
+    ]
+
+
+class SwotProposalApproveRequest(BaseModel):
+    """Explicit human decisions for one draft proposal."""
+
+    decisions: list[
+        SwotApprovalDecisionRequest
+    ] = Field(
+        min_length=1,
+    )
+
+
+# ============================================================
+# Ownership Guard
+# ============================================================
 async def _require_owned_business(
     *,
     db: AsyncSession,
@@ -91,6 +128,9 @@ async def _require_owned_business(
     return business
 
 
+# ============================================================
+# Response Builders
+# ============================================================
 def _proposal_response(
     document: Any,
 ) -> dict[str, Any]:
@@ -143,16 +183,91 @@ def _proposal_response(
             else None
         ),
         "created_at": (
-            document.created_at
-            .isoformat()
+            document.created_at.isoformat()
         ),
         "updated_at": (
-            document.updated_at
+            document.updated_at.isoformat()
+        ),
+    }
+
+
+def _approval_response(
+    result: Any,
+) -> dict[str, Any]:
+    """Return the public approved-SWOT workflow response."""
+
+    approved_update = (
+        result.approved_update
+    )
+    approved_report = (
+        result.approved_report
+    )
+
+    persisted_proposal = (
+        result.persisted_proposal
+    )
+
+    return {
+        "business_id": str(
+            result.business_id
+        ),
+        "proposal_id": str(
+            result.proposal_id
+        ),
+        "approved_report_id": str(
+            result.approved_report_id
+        ),
+        "proposal_status": (
+            persisted_proposal.status
+        ),
+        "engine_version": (
+            approved_report.engine_version
+        ),
+        "approval_complete": (
+            approved_update
+            .approval_complete
+        ),
+        "ready_for_strategy": (
+            approved_update
+            .ready_for_strategy
+        ),
+        "approved_candidate_ids": list(
+            approved_update
+            .approved_candidate_ids
+        ),
+        "rejected_candidate_ids": list(
+            approved_update
+            .rejected_candidate_ids
+        ),
+        "unresolved_candidate_ids": list(
+            approved_update
+            .unresolved_candidate_ids
+        ),
+        "source_coverage": list(
+            approved_update
+            .source_coverage
+        ),
+        "swot_report": (
+            approved_report.swot_report
+        ),
+        "validation_results": (
+            approved_report
+            .validation_results
+        ),
+        "warnings": list(
+            approved_update.warnings
+        ),
+        "created_at": (
+            approved_report
+            .created_at
             .isoformat()
         ),
     }
 
 
+# ============================================================
+# POST /businesses/{business_id}/swot/proposals
+# ============================================================
 @router.post(
     "",
     status_code=(
@@ -175,7 +290,7 @@ async def create_swot_update_proposal(
     """
     Generate, validate, and persist one draft SWOT update proposal.
 
-    The endpoint never approves the proposal automatically.
+    This endpoint never approves the proposal automatically.
     """
 
     business = await _require_owned_business(
@@ -225,6 +340,9 @@ async def create_swot_update_proposal(
     )
 
 
+# ============================================================
+# GET /businesses/{business_id}/swot/proposals/{proposal_id}
+# ============================================================
 @router.get(
     "/{proposal_id}",
     summary=(
@@ -266,4 +384,91 @@ async def read_swot_update_proposal(
 
     return _proposal_response(
         document
+    )
+
+
+# ============================================================
+# POST /businesses/{business_id}/swot/proposals/{proposal_id}/approve
+# ============================================================
+@router.post(
+    "/{proposal_id}/approve",
+    status_code=status.HTTP_200_OK,
+    summary=(
+        "Approve one grounded SWOT update proposal"
+    ),
+)
+async def approve_swot_update_proposal(
+    business_id: UUID,
+    proposal_id: UUID,
+    request: SwotProposalApproveRequest,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: AsyncSession = Depends(
+        get_db
+    ),
+) -> dict[str, Any]:
+    """
+    Apply explicit human decisions and persist an approved SWOT.
+
+    This endpoint does not run Strategy. Strategy generation remains
+    a separate operation that consumes the persisted approved SWOT.
+    """
+
+    business = await _require_owned_business(
+        db=db,
+        business_id=business_id,
+        current_user=current_user,
+    )
+
+    decision_values = tuple(
+        decision.model_dump(
+            mode="python"
+        )
+        for decision in request.decisions
+    )
+
+    try:
+        result = await (
+            approve_swot_update_proposal_workflow(
+                business_id=business_id,
+                proposal_id=proposal_id,
+                business_type=(
+                    business.business_type
+                ),
+                decision_values=(
+                    decision_values
+                ),
+            )
+        )
+    except ValueError as error:
+        message = str(
+            error
+        )
+
+        lowered_message = (
+            message.lower()
+        )
+
+        if "not found" in lowered_message:
+            status_code = (
+                status.HTTP_404_NOT_FOUND
+            )
+        elif "only draft" in lowered_message:
+            status_code = (
+                status.HTTP_409_CONFLICT
+            )
+        else:
+            status_code = (
+                status
+                .HTTP_422_UNPROCESSABLE_ENTITY
+            )
+
+        raise HTTPException(
+            status_code=status_code,
+            detail=message,
+        ) from error
+
+    return _approval_response(
+        result
     )
