@@ -1,9 +1,9 @@
-"""
+﻿"""
 Report Model
 Stores metadata for SWOT and Strategy reports.
 The actual content lives in MongoDB.
 """
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 from decimal import Decimal
 from sqlalchemy import DateTime, ForeignKey, Integer, Numeric, String
@@ -100,7 +100,7 @@ class Report(Base):
     # ========================================================
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
     )
     completed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),

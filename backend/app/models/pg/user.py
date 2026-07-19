@@ -1,8 +1,8 @@
-"""
+﻿"""
 User Model
 Represents application users (business owners).
 """
-from datetime import datetime
+from datetime import UTC, datetime
 from uuid import UUID, uuid4
 from sqlalchemy import Boolean, DateTime, String
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
@@ -72,12 +72,12 @@ class User(Base):
     # ========================================================
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )
 
     # ========================================================
