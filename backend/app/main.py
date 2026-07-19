@@ -24,6 +24,7 @@ from app.api.v1 import (
     social_accounts,
     swot,
     swot_updates,
+    strategy,
 )
 from app.core.config import settings
 from app.db.mongo import (
@@ -124,6 +125,10 @@ app.include_router(
 )
 app.include_router(
     swot_updates.router,
+    prefix=settings.API_V1_PREFIX,
+)
+app.include_router(
+    strategy.router,
     prefix=settings.API_V1_PREFIX,
 )
 app.include_router(
