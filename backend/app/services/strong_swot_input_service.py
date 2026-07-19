@@ -239,36 +239,6 @@ def _source_platform_to_coverage(
 
     return source
 
-
-def _profile_source_coverage(
-    profile: BusinessProfile,
-) -> list[str]:
-    """Collect canonical sources represented by customer themes."""
-
-    sources: list[str] = []
-
-    for theme in profile.themes:
-        for source in (
-            theme.source_platforms
-        ):
-            canonical_source = (
-                _source_platform_to_coverage(
-                    source
-                )
-            )
-
-            if (
-                canonical_source
-                and canonical_source
-                not in sources
-            ):
-                sources.append(
-                    canonical_source
-                )
-
-    return sources
-
-
 def _profile_source_coverage(
     profile: BusinessProfile,
 ) -> list[str]:
