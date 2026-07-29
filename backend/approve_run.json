@@ -1,8 +1,9 @@
 ﻿{
   "decisions": [
-    {
-      "candidate_id": "<candidate_id بتاع الـ proposal الجديد>",
-      "decision": "approve"
-    }
+    { "candidate_id": "grounded:fd46ae61-6e81-58f8-8488-358d94f12d21", "decision": "approve" },
+    { "candidate_id": "grounded:8efe8db3-389f-5fe7-8368-cee6ecde9cc3", "decision": "approve" },
+    { "candidate_id": "grounded:6120b68f-0bea-5a73-887b-4d8d2b9bd446", "decision": "approve" },
+    { "candidate_id": "grounded:b8b2966c-9116-5e39-af61-524c4dc235bf", "decision": "approve" },
+    { "candidate_id": "grounded:7262e7d7-0def-5958-b769-7ce21bd50baa", "decision": "approve" }
   ]
 }

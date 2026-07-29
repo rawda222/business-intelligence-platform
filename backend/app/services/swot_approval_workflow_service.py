@@ -895,13 +895,17 @@ def restore_swot_update_proposal(
                 "proposal_snapshot.business_id"
             ),
         ),
-        base_report_id=_uuid_value(
-            data.get(
-                "base_report_id"
-            ),
-            field_name=(
-                "proposal_snapshot.base_report_id"
-            ),
+        base_report_id=(
+            _uuid_value(
+                data.get(
+                    "base_report_id"
+                ),
+                field_name=(
+                    "proposal_snapshot.base_report_id"
+                ),
+            )
+            if data.get("base_report_id") is not None
+            else None
         ),
         base_engine_version=(
             _required_text(
