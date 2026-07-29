@@ -1164,11 +1164,21 @@ async def approve_swot_update_proposal_workflow(
             "requested proposal_id."
         )
 
-    baseline = (
-        restore_normalized_swot_baseline(
-            document.baseline_snapshot
+    if document.baseline_snapshot is None:
+        baseline = NormalizedSwotBaseline(
+            business_id=business_id,
+            report_id=None,
+            engine_version="genesis",
+            source_coverage=(),
+            items=(),
+            warnings=(),
         )
-    )
+    else:
+        baseline = (
+            restore_normalized_swot_baseline(
+                document.baseline_snapshot
+            )
+        )
 
     proposal = restore_swot_update_proposal(
         document.proposal_snapshot
