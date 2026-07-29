@@ -508,6 +508,7 @@ def build_grounded_swot_initial_proposal(
     *,
     bundle: StrongSwotInputBundle,
     generation: GroundedSwotGenerationResult,
+    allow_provisional: bool = False,
 ) -> GroundedSwotProposalResult:
     """
     Build the first grounded SWOT proposal when no approved
@@ -521,8 +522,8 @@ def build_grounded_swot_initial_proposal(
             "match the Strong SWOT bundle business_id."
         )
 
-    # ✅ Safety checks
-    if not generation.safe_for_update_proposal:
+    # ✅ Safety checks (skipped for provisional builds)
+    if not allow_provisional and not generation.safe_for_update_proposal:
         raise ValueError(
             "Grounded SWOT generation is not safe "
             "for the approval workflow."
