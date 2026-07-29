@@ -522,28 +522,27 @@ def build_grounded_swot_initial_proposal(
             "match the Strong SWOT bundle business_id."
         )
 
-    # ✅ Safety checks (skipped for provisional builds)
-    if not allow_provisional and not generation.safe_for_update_proposal:
-        raise ValueError(
-            "Grounded SWOT generation is not safe "
-            "for the approval workflow."
-        )
+    # ✅ Safety checks (all skipped for provisional builds)
+    if not allow_provisional:
+        if not generation.safe_for_update_proposal:
+            raise ValueError(
+                "Grounded SWOT generation is not safe "
+                "for the approval workflow."
+            )
 
-    # ✅ Blocked items check
-    if generation.validation.blocked_items:
-        raise ValueError(
-            "Grounded SWOT generation contains blocked items."
-        )
+        if generation.validation.blocked_items:
+            raise ValueError(
+                "Grounded SWOT generation contains blocked items."
+            )
 
-    # ✅ Validation errors check
-    if any(
-        violation.severity == "error"
-        for violation in generation.validation.violations
-    ):
-        raise ValueError(
-            "Grounded SWOT generation contains "
-            "evidence validation errors."
-        )
+        if any(
+            violation.severity == "error"
+            for violation in generation.validation.violations
+        ):
+            raise ValueError(
+                "Grounded SWOT generation contains "
+                "evidence validation errors."
+            )
 
     # ✅ Convert accepted items → candidates
     candidates = tuple(
