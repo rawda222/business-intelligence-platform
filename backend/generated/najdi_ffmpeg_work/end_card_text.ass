@@ -1,0 +1,23 @@
+﻿[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+ScaledBorderAndShadow: yes
+WrapStyle: 2
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Title,Tahoma,70,&H00F6E8D5,&H00F6E8D5,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,2,1,5,70,70,0,1
+Style: Product,Tahoma,88,&H00FFFFFF,&H00FFFFFF,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,70,70,0,1
+Style: Price,Tahoma,108,&H0000D7FF,&H0000D7FF,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,4,1,5,70,70,0,1
+Style: CTA,Tahoma,42,&H00F6E8D5,&H00F6E8D5,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,2,1,5,45,45,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 3,0:00:26.00,0:00:30.00,Title,,0,0,0,,{\an5\pos(540,500)\fad(180,200)}مطعم شعبي نجدي
+Dialogue: 3,0:00:26.50,0:00:30.00,Product,,0,0,0,,{\an5\pos(540,790)\fad(160,200)}اللحم المخصوص
+Dialogue: 4,0:00:27.10,0:00:30.00,Price,,0,0,0,,{\an5\pos(540,1060)\fad(150,200)}39 ريال
+Dialogue: 3,0:00:27.80,0:00:30.00,CTA,,0,0,0,,{\an5\pos(540,1370)\fad(160,200)}اطلبه الحين عبر
+Dialogue: 3,0:00:28.20,0:00:30.00,CTA,,0,0,0,,{\an5\pos(540,1460)\fad(160,200)}جاهز - هنقرستيشن - نينجا
+
+

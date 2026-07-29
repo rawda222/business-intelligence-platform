@@ -1,4 +1,4 @@
-"""
+﻿"""
 Grounded SWOT Updates API Tests
 
 Tests ownership enforcement, workflow mapping, tenant-scoped
@@ -199,7 +199,7 @@ async def test_owner_can_create_grounded_proposal(
 
     monkeypatch.setattr(
         api,
-        "create_swot_update_proposal_workflow",
+        "run_unified_swot_workflow",
         fake_workflow,
     )
 
@@ -272,7 +272,7 @@ async def test_non_owner_cannot_create_proposal(
 
     monkeypatch.setattr(
         api,
-        "create_swot_update_proposal_workflow",
+        "run_unified_swot_workflow",
         fake_workflow,
     )
 
@@ -325,7 +325,7 @@ async def test_workflow_validation_error_becomes_422(
 
     monkeypatch.setattr(
         api,
-        "create_swot_update_proposal_workflow",
+        "run_unified_swot_workflow",
         fake_workflow,
     )
 

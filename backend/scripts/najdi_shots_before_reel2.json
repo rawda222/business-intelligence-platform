@@ -1,0 +1,20 @@
+[
+  {
+    "id": "najdi_opening_hook",
+    "image": "assets/najdi_campaign/19_veo_ready/lamb_hero_vertical_01_9x16.jpg",
+    "duration_seconds": 4,
+    "prompt": "Start immediately with a powerful premium Saudi food advertisement hook. A controlled fast cinematic push-in toward the cooked lamb. A visible natural burst of steam rises from the first frame, then becomes gentle. Preserve the exact lamb, rice, plate, garnish, food portions, colors, lighting and composition from the input image. Warm appetizing restaurant lighting. Only the camera and steam move. No hands, no new food, no duplication, no morphing, no flickering, no generated text, no logo, no watermark and no camera shake."
+  },
+  {
+    "id": "najdi_platter_motion",
+    "image": "assets/najdi_campaign/19_veo_ready/lamb_hero_platter_01_9x16.jpg",
+    "duration_seconds": 6,
+    "prompt": "A smooth circular camera orbit of only a few degrees around the centered cooked lamb platter, followed by a subtle gradual push-in. Gentle natural steam and warm highlights. Preserve the exact meat, rice, sides, garnish, plate, quantities, colors and background. The centered plate must remain stable to support a match cut into the next centered platter. No food movement, no new ingredients, no hands, no morphing, no flickering, no text, no logo and no camera shake."
+  },
+  {
+    "id": "najdi_character_reveal",
+    "image": "assets/najdi_campaign/15_character_ai/chef_character_ai_kitchen_01.png",
+    "duration_seconds": 4,
+    "prompt": "A polished animated restaurant mascot reveal. The existing cartoon character remains fully consistent with the input image and presents the existing food plate toward the camera with only a very small controlled forward movement. A subtle camera push-in and warm kitchen lighting. Preserve the exact character design, face, clothing, colors, food plate and environment. No dialogue, no lip movement, no waving, no extra fingers, no body deformation, no new objects, no generated text, no logo, no watermark and no camera shake."
+  }
+]

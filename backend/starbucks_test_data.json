@@ -1,0 +1,544 @@
+{
+  "business_identity": {
+    "business_name": "Starbucks",
+    "slogan": "To inspire and nurture the human spirit – one person, one cup, and one neighbourhood at a time.",
+    "industry": "Food & Beverage",
+    "category": "Coffee Shop",
+    "subcategory": "International Coffeehouse Chain",
+    "description": "Starbucks is a premier roaster and retailer of specialty coffee globally, committed to offering the highest quality coffee and fostering human connection. Originating in Seattle in 1971, it expanded based on a vision to create a 'third place' – a sense of community between work and home – now operating over 15,000 stores in 50 countries.",
+    "source_url": "https://www.starbucks.eg/en/about-us",
+    "final_url": "https://www.starbucks.eg/en/about-us"
+  },
+  "offerings": [
+    {
+      "name": "Coffee",
+      "type": "product",
+      "description": "The world's highest quality and specialty coffee, fresh-roasted whole bean coffees.",
+      "price": null,
+      "currency": "",
+      "image_url": "",
+      "evidence": "commitment to the highest quality coffee in the world, fresh-roasted whole bean coffees, premier roaster and retailer of specialty coffee",
+      "page_source": "https://www.starbucks.eg/en/about-us"
+    },
+    {
+      "name": "Drinks",
+      "type": "product",
+      "description": "Various beverages served by a Starbucks barista, offering a unique interaction with each customer.",
+      "price": null,
+      "currency": "",
+      "image_url": "",
+      "evidence": "a customer receives a drink from a Starbucks barista",
+      "page_source": "https://www.starbucks.eg/en/about-us"
+    }
+  ],
+  "marketing_signals": {
+    "value_propositions": [
+      {
+        "text": "Each customer interaction is unique and honored.",
+        "inferred": false
+      },
+      {
+        "text": "Commitment to the highest quality coffee in the world.",
+        "inferred": false
+      },
+      {
+        "text": "Engage with customers and communities to do business responsibly.",
+        "inferred": false
+      },
+      {
+        "text": "Improve every place we touch.",
+        "inferred": false
+      },
+      {
+        "text": "Provide great coffee and help make the world a little better.",
+        "inferred": false
+      },
+      {
+        "text": "A place for conversation and a sense of community.",
+        "inferred": false
+      },
+      {
+        "text": "A third place between work and home.",
+        "inferred": false
+      },
+      {
+        "text": "Brings a feeling of connection.",
+        "inferred": false
+      },
+      {
+        "text": "Inspire and nurture the human spirit – one person, one cup, and one neighbourhood at a time.",
+        "inferred": false
+      },
+      {
+        "text": "Premier roaster and retailer of specialty coffee in the world.",
+        "inferred": false
+      },
+      {
+        "text": "Deliver an exceptional experience.",
+        "inferred": false
+      }
+    ],
+    "audience_signals": [
+      {
+        "type": "behavior",
+        "text": "Individuals seeking connection and a 'third place' for community and conversation.",
+        "evidence": "A place for conversation and a sense of community. A third place between work and home. brought a feeling of connection."
+      },
+      {
+        "type": "demographic",
+        "text": "Broad appeal to customers and communities.",
+        "evidence": "engage with our customers and communities, one person, one cup, and one neighbourhood"
+      },
+      {
+        "type": "need",
+        "text": "Those who appreciate high-quality specialty coffee and an exceptional experience.",
+        "evidence": "commitment to the highest quality coffee in the world, premier roaster and retailer of specialty coffee, an exceptional experience"
+      }
+    ],
+    "cta_analysis": {
+      "ctas": [
+        "Meet me at Starbucks",
+        "Order now",
+        "Find your nearest store",
+        "Learn more"
+      ],
+      "quality": "strong"
+    }
+  },
+  "brand_voice": {
+    "style": [
+      "aspirational",
+      "community-focused",
+      "heritage-driven",
+      "globally consistent",
+      "welcoming"
+    ],
+    "formality": "semi-formal",
+    "emotional_tone": [
+      "inspiring",
+      "connecting",
+      "welcoming",
+      "responsible"
+    ]
+  },
+  "commercial": {
+    "pricing": {
+      "visible": false,
+      "posture": "unknown",
+      "price_range": "",
+      "billing_model": "one-time"
+    }
+  },
+  "contact_presence": {
+    "phones": [
+      "02-24803822"
+    ],
+    "emails": [
+      "starbucks.mena@alshaya.com"
+    ],
+    "website": "https://www.starbucks.eg/en/about-us",
+    "socials": {
+      "facebook": "https://facebook.com/starbucks",
+      "instagram": "https://instagram.com/starbucks",
+      "linkedin": "",
+      "tiktok": "https://www.tiktok.com/@starbucks",
+      "youtube": "https://www.youtube.com/starbucks"
+    }
+  },
+  "visual_identity": {
+    "logo_url": "https://www.starbucks.eg/assets/app/icons/apple-icon.png",
+    "dominant_colors": [
+      "#006040",
+      "#208060",
+      "#80c0a0",
+      "#408080",
+      "#c0e0c0"
+    ],
+    "brand_style": "iconic, globally consistent, inviting"
+  },
+  "insights": {
+    "strength_hints": [
+      "Strong global brand recognition and heritage.",
+      "Commitment to high-quality products and customer experience.",
+      "Focus on community building and social responsibility.",
+      "Extensive global presence (15,000+ stores in 50 countries)."
+    ],
+    "weakness_hints": [
+      "Lack of specific product/menu details on the website.",
+      "Absence of pricing information.",
+      "Generic product descriptions."
+    ],
+    "missing_information": [
+      "Detailed product menu with specific item names.",
+      "Pricing for individual offerings.",
+      "Information about loyalty programs or special offers."
+    ]
+  },
+  "known_competitors": [
+    "Costa Coffee",
+    "Cilantro Cafe",
+    "Coffee Berry",
+    "Second Cup"
+  ],
+  "evidence_refs": [
+    {
+      "field": "business_name",
+      "value": "Starbucks",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "Starbucks"
+    },
+    {
+      "field": "business_identity.slogan",
+      "value": "To inspire and nurture the human spirit – one person, one cup, and one neighbourhood at a time.",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "Our mission to inspire and nurture the human spirit – one person, one cup, and one neighbourhood at a time."
+    },
+    {
+      "field": "business_identity.description",
+      "value": "Starbucks is a premier roaster and retailer of specialty coffee globally, committed to offering the highest quality coffee and fostering human connection. Originating in Seattle in 1971, it expanded based on a vision to create a 'third place' – a sense of community between work and home – now operating over 15,000 stores in 50 countries.",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "commitment to the highest quality coffee in the world... From its beginnings as a single store... in Seattle’s historic Pike Place Market... Howard travelled to Italy and became captivated with Italian coffee bars and the romance of the coffee experience. He had a vision to bring the Italian coffeehouse tradition back to the United States. A place for conversation and a sense of community. A third place between work and home... Today, with more than 15,000 stores in 50 countries, Starbucks is the premier roaster and retailer of specialty coffee in the world."
+    },
+    {
+      "field": "brand_voice.style",
+      "value": "heritage-driven",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "bring both our heritage"
+    },
+    {
+      "field": "value_propositions",
+      "value": "Commitment to the highest quality coffee in the world.",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "from our commitment to the highest quality coffee in the world"
+    },
+    {
+      "field": "value_propositions",
+      "value": "A place for conversation and a sense of community.",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "A place for conversation and a sense of community."
+    },
+    {
+      "field": "commercial.billing_model",
+      "value": "per-visit",
+      "source_url": "https://www.starbucks.eg/en/about-us",
+      "evidence_text": "a customer receives a drink from a Starbucks barista"
+    }
+  ],
+  "confidence": {
+    "overall": 1.0,
+    "missing_critical_fields": [],
+    "low_confidence_fields": []
+  },
+  "schema_version": "2.1",
+  "reviews": {
+    "summary": {
+      "average_rating": 0.0,
+      "total_reviews": 18,
+      "rating_distribution": {
+        "1_star": 0,
+        "2_star": 0,
+        "3_star": 0,
+        "4_star": 0,
+        "5_star": 0
+      }
+    },
+    "sentiment_analysis": {
+      "positive_ratio": 0.83,
+      "neutral_ratio": 0.11,
+      "negative_ratio": 0.06
+    },
+    "key_themes": {
+      "positive": [
+        "Product taste and quality (e.g., 'so good', 'perfect', 'favorite')",
+        "Desire for product permanence and wider availability",
+        "Customer excitement and anticipation for new/returning items",
+        "Brand appeal and loyalty"
+      ],
+      "negative": [
+        "Product safety concerns for employees"
+      ]
+    },
+    "customer_voice": {
+      "keywords": [
+        "so good",
+        "permanent item",
+        "love this",
+        "perfect",
+        "I want",
+        "I need",
+        "matcha",
+        "toxic powder",
+        "workers sick",
+        "my favorite"
+      ]
+    },
+    "pain_points": [
+      "Allegations of toxic refresher powder causing illness among workers",
+      "Limited availability of popular items (desire for permanent status)"
+    ],
+    "strength_signals": [
+      "Highly praised product taste and quality",
+      "Strong customer demand for specific items to become permanent",
+      "High level of excitement and anticipation for products",
+      "Positive brand sentiment and loyalty"
+    ],
+    "confidence": 0.0,
+    "raw_samples": [
+      {
+        "text": "Can you guys get rid of the toxic refresher powder it making a lot of workers sick and the cream alternatives is more better",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 02:27:45+00:00"
+      },
+      {
+        "text": "Need the marshmallow syrup to be permanent!! It’s sooooo good",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 19:18:21+00:00"
+      },
+      {
+        "text": "I TRIED IT IT WAS SO GOOD",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 03:03:44+00:00"
+      },
+      {
+        "text": "is it going to be at the starbucks in target?",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 18:49:55+00:00"
+      },
+      {
+        "text": "I love this 🙌🏻🫠🤎",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-13 05:10:14+00:00"
+      },
+      {
+        "text": "This needs to be a PERMANENT ITEM",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-25 17:04:32+00:00"
+      },
+      {
+        "text": "Yay my kids will be thrilled",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 22:01:34+00:00"
+      },
+      {
+        "text": "Perfect 🤌🏻🥰",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-13 22:21:07+00:00"
+      },
+      {
+        "text": "eu queroooooooooooo",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 17:18:45+00:00"
+      },
+      {
+        "text": "How to get it now in Canada?",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 05:22:01+00:00"
+      },
+      {
+        "text": "Omg I am running now love🤗😍",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 18:26:31+00:00"
+      },
+      {
+        "text": "mdssss precisooo",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 17:18:50+00:00"
+      },
+      {
+        "text": "3/4/5 is right for me 😍😍🤤",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 05:48:16+00:00"
+      },
+      {
+        "text": "If its from you, all of the above ✨",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 05:16:58+00:00"
+      },
+      {
+        "text": "I’m sorry I only drink matcha 🍵 especially from Starbucks! Pro tip put whip cream it tastes so good",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 02:33:04+00:00"
+      },
+      {
+        "text": "Omg thank god it’s been years",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-18 20:31:30+00:00"
+      },
+      {
+        "text": "Omg it's so good!😍",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-25 18:49:14+00:00"
+      },
+      {
+        "text": "My favorite😋♥️🫶🏼",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-24 11:35:14+00:00"
+      },
+      {
+        "text": "Can you guys get rid of the toxic refresher powder it making a lot of workers sick and the cream alternatives is more better",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 02:27:45+00:00"
+      },
+      {
+        "text": "Need the marshmallow syrup to be permanent!! It’s sooooo good",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 19:18:21+00:00"
+      },
+      {
+        "text": "I TRIED IT IT WAS SO GOOD",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 03:03:44+00:00"
+      },
+      {
+        "text": "is it going to be at the starbucks in target?",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 18:49:55+00:00"
+      },
+      {
+        "text": "I love this 🙌🏻🫠🤎",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-13 05:10:14+00:00"
+      },
+      {
+        "text": "This needs to be a PERMANENT ITEM",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-25 17:04:32+00:00"
+      },
+      {
+        "text": "Yay my kids will be thrilled",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 22:01:34+00:00"
+      },
+      {
+        "text": "Perfect 🤌🏻🥰",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-13 22:21:07+00:00"
+      },
+      {
+        "text": "eu queroooooooooooo",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 17:18:45+00:00"
+      },
+      {
+        "text": "How to get it now in Canada?",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 05:22:01+00:00"
+      },
+      {
+        "text": "Omg I am running now love🤗😍",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 18:26:31+00:00"
+      },
+      {
+        "text": "mdssss precisooo",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-26 17:18:50+00:00"
+      },
+      {
+        "text": "3/4/5 is right for me 😍😍🤤",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 05:48:16+00:00"
+      },
+      {
+        "text": "If its from you, all of the above ✨",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 05:16:58+00:00"
+      },
+      {
+        "text": "I’m sorry I only drink matcha 🍵 especially from Starbucks! Pro tip put whip cream it tastes so good",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-27 02:33:04+00:00"
+      },
+      {
+        "text": "Omg thank god it’s been years",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-18 20:31:30+00:00"
+      },
+      {
+        "text": "Omg it's so good!😍",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-25 18:49:14+00:00"
+      },
+      {
+        "text": "My favorite😋♥️🫶🏼",
+        "rating": null,
+        "source": "instagram",
+        "date": "2026-07-24 11:35:14+00:00"
+      }
+    ]
+  },
+  "competitors": [
+    {
+      "name": "Cilantro Cafe",
+      "place_id": null,
+      "website": "https://cilantro.cafe/",
+      "maps_url": "",
+      "distance_km": null,
+      "rating": null,
+      "review_count": null,
+      "price_level": "",
+      "address": "",
+      "peer_fit_score": 1.0,
+      "why_selected": "Discovered via web search: Cilantro Cafe official website",
+      "is_local": false,
+      "has_website": true,
+      "reviews_sample": [],
+      "description": "customerservice@cilantrocafe.net · All prices are tax inclusive",
+      "discovery_method": "web_search",
+      "instagram": "https://www.instagram.com/cilantro.cafe/",
+      "facebook": "https://www.facebook.com/cilantrocafee",
+      "website_facts": [
+        {
+          "claim": "Online ordering is available.",
+          "evidence_text": "[Store Ordering](https://order.cilantro.cafe/)",
+          "source_url": "https://cilantro.cafe/"
+        },
+        {
+          "claim": "Corporates ordering is available.",
+          "evidence_text": "[Corporates ordering](https://cdn.shopify.com/s/files/1/0371/6494/1356/files/Cilantro_Coffee_Break_Menu_2025.pdf?v=1738931075)",
+          "source_url": "https://cilantro.cafe/"
+        },
+        {
+          "claim": "Products can be purchased online.",
+          "evidence_text": "[Shop Now](https://cilantro.cafe/collections/buy-2-get-1)",
+          "source_url": "https://cilantro.cafe/"
+        }
+      ]
+    }
+  ]
+}

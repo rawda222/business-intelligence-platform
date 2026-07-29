@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED",
+  "shot_id": "reel2_story_kitchen_v2",
+  "image_path": "D:\\projects\\business-intelligence-platform\\backend\\assets\\najdi_campaign\\25_reel2_story_ready\\story_kitchen_ref.jpg",
+  "input_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/inputs/reel2_story_kitchen_v2/20260725T130036Z/story_kitchen_ref.jpg",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/16ec84cd-13bf-43ea-942b-55378b125515",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_story_kitchen_v2/run-20260725T130036Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_story_kitchen_v2/run-20260725T130036Z/15655427892725925281/sample_0.mp4",
+  "model": "veo-3.1-generate-001",
+  "completed_at": "2026-07-25T13:02:00.317108+00:00"
+}

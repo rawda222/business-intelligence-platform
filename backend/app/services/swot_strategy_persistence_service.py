@@ -152,56 +152,73 @@ async def save_swot_update_proposal(
 ) -> SwotUpdateProposalDocument:
     """Persist one deterministic draft SWOT update proposal."""
 
-    proposal = (
-        grounded_result.proposal
-    )
+    proposal = grounded_result.proposal
 
     document = SwotUpdateProposalDocument(
         proposal_id=_uuid(
             proposal.proposal_id,
             field_name="proposal_id",
         ),
+
         business_id=_uuid(
             proposal.business_id,
             field_name="business_id",
         ),
-        base_report_id=_uuid(
-            proposal.base_report_id,
-            field_name="base_report_id",
+
+        base_report_id=(
+            _uuid(
+                proposal.base_report_id,
+                field_name="base_report_id",
+            )
+            if proposal.base_report_id is not None
+            else None
         ),
+
+        proposal_mode=proposal.proposal_mode,
+
         base_engine_version=(
             proposal.base_engine_version
         ),
+
         proposal_version=(
             proposal.proposal_version
         ),
+
         status="draft",
+
         baseline_snapshot=(
             _serialize(
                 baseline
             )
+            if baseline is not None
+            else None
         ),
+
         candidate_snapshot=(
             _serialize(
                 grounded_result.candidates
             )
         ),
+
         proposal_snapshot=(
             _serialize(
                 proposal
             )
         ),
+
         generation_metadata={
             "provider_used": getattr(
                 generation,
                 "provider_used",
                 "unknown",
             ),
+
             "model_used": getattr(
                 generation,
                 "model_used",
                 "unknown",
             ),
+
             "fallback_used": bool(
                 getattr(
                     generation,
@@ -209,21 +226,25 @@ async def save_swot_update_proposal(
                     False,
                 )
             ),
+
             "raw_item_count": getattr(
                 generation,
                 "raw_item_count",
                 0,
             ),
+
             "accepted_item_count": getattr(
                 generation,
                 "accepted_item_count",
                 0,
             ),
+
             "blocked_item_count": getattr(
                 generation,
                 "blocked_item_count",
                 0,
             ),
+
             "safe_for_update_proposal": bool(
                 getattr(
                     generation,
@@ -232,12 +253,15 @@ async def save_swot_update_proposal(
                 )
             ),
         },
+
         source_coverage=list(
             proposal.current_sources
         ),
+
         warnings=list(
             grounded_result.warnings
         ),
+
         requires_human_approval=(
             proposal.requires_human_approval
         ),
@@ -387,10 +411,14 @@ async def save_approved_swot_report(
             business_type
         ),
         status="approved",
-        base_report_id=_uuid(
-            approved.base_report_id,
-            field_name="base_report_id",
-        ),
+        base_report_id=(
+    _uuid(
+        approved.base_report_id,
+        field_name="base_report_id",
+    )
+    if approved.base_report_id is not None
+    else None
+),
         source_proposal_id=_uuid(
             approved.source_proposal_id,
             field_name="source_proposal_id",

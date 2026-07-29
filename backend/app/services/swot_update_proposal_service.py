@@ -18,6 +18,7 @@ import re
 from dataclasses import dataclass
 from typing import Literal
 from uuid import UUID, uuid5
+from uuid import uuid4
 
 from app.services.legacy_swot_adapter import (
     NormalizedSwotBaseline,
@@ -111,9 +112,9 @@ class SwotUpdateProposal:
 
     business_id: UUID
 
-    base_report_id: UUID
+    base_report_id: UUID | None
 
-    base_engine_version: str
+    base_engine_version: str | None
 
     status: ProposalStatus
 
@@ -175,6 +176,8 @@ class SwotUpdateProposal:
     requires_human_approval: bool
 
     proposal_version: str = "1.0"
+
+    proposal_mode: str = "update"
 
 
 def _normalize_title(
@@ -687,42 +690,121 @@ def build_swot_update_proposal(
         )
 
     return SwotUpdateProposal(
-        proposal_id=_proposal_id(
-            baseline=baseline,
-            candidates=candidates,
-        ),
-        business_id=(
-            baseline.business_id
-        ),
-        base_report_id=(
-            baseline.report_id
-        ),
-        base_engine_version=(
-            baseline.engine_version
-        ),
-        status="draft",
-        baseline_sources=(
-            baseline.source_coverage
-        ),
-        current_sources=(
-            current_sources
-        ),
-        new_sources_since_baseline=(
-            new_sources_since_baseline
-        ),
-        items=items,
-        add_items=add_items,
-        retained_items=retained_items,
-        conflict_items=conflict_items,
-        supporting_signals=(
-            supporting_signals
-        ),
-        data_gaps=data_gaps,
-        unchanged_baseline_item_ids=(
-            unchanged_baseline_item_ids
-        ),
-        warnings=tuple(
-            warnings
-        ),
-        requires_human_approval=True,
+    proposal_id=_proposal_id(
+        baseline=baseline,
+        candidates=candidates,
+    ),
+
+    business_id=(
+        baseline.business_id
+    ),
+
+    base_report_id=(
+        baseline.report_id
+    ),
+
+    base_engine_version=(
+        baseline.engine_version
+    ),
+
+    status="draft",
+
+    baseline_sources=(
+        baseline.source_coverage
+    ),
+
+    current_sources=(
+        current_sources
+    ),
+
+    new_sources_since_baseline=(
+        new_sources_since_baseline
+    ),
+
+    items=items,
+
+    add_items=add_items,
+
+    retained_items=retained_items,
+
+    conflict_items=conflict_items,
+
+    supporting_signals=(
+        supporting_signals
+    ),
+
+    data_gaps=data_gaps,
+
+    unchanged_baseline_item_ids=(
+        unchanged_baseline_item_ids
+    ),
+
+    warnings=tuple(
+        warnings
+    ),
+
+    requires_human_approval=True,
+
+    proposal_mode="update",
+)
+
+def build_initial_swot_proposal(
+    *,
+    business_id,
+    candidates,
+    source_coverage,
+):
+    """
+    Build the first SWOT proposal when no approved
+    SWOT baseline exists.
+    """
+
+    title_index = {}
+
+    items = tuple(
+        _build_proposal_item(
+            candidate=candidate,
+            title_index=title_index,
+        )
+        for candidate in candidates
     )
+
+    return SwotUpdateProposal(
+    proposal_id=uuid4(),
+
+    business_id=business_id,
+
+    base_report_id=None,
+
+    base_engine_version=None,
+
+    status="draft",
+
+    proposal_mode="initial",
+
+    baseline_sources=(),
+
+    current_sources=source_coverage,
+
+    new_sources_since_baseline=source_coverage,
+
+    items=items,
+
+    add_items=items,
+
+    retained_items=(),
+
+    conflict_items=(),
+
+    supporting_signals=(),
+
+    data_gaps=(),
+
+    unchanged_baseline_item_ids=(),
+
+    warnings=(
+        "Initial SWOT proposal.",
+    ),
+
+    requires_human_approval=True,
+)

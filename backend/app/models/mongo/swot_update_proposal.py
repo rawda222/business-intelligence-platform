@@ -34,9 +34,11 @@ class SwotUpdateProposalDocument(Document):
 
     business_id: UUID = Indexed()
 
-    base_report_id: UUID
+    proposal_mode: str = "update"
 
-    base_engine_version: str
+    base_report_id: UUID | None = None
+
+    base_engine_version: str | None = None
 
     proposal_version: str = "1.0"
 
@@ -47,9 +49,7 @@ class SwotUpdateProposalDocument(Document):
     baseline_snapshot: dict[
         str,
         Any,
-    ] = Field(
-        default_factory=dict,
-    )
+    ] | None = None
 
     candidate_snapshot: list[
         dict[str, Any]

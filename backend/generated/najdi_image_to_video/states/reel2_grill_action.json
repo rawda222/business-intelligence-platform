@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED",
+  "shot_id": "reel2_grill_action",
+  "image_path": "D:\\projects\\business-intelligence-platform\\backend\\assets\\najdi_campaign\\23_reel2_veo_ready\\reel2_grill_source.png",
+  "input_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/inputs/reel2_grill_action/20260725T103024Z/reel2_grill_source.png",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/7d983006-a887-4c32-81e9-3f8a1ba1c3b7",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_grill_action/run-20260725T103024Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_grill_action/run-20260725T103024Z/9037687456152646248/sample_0.mp4",
+  "model": "veo-3.1-generate-001",
+  "completed_at": "2026-07-25T10:31:18.398774+00:00"
+}

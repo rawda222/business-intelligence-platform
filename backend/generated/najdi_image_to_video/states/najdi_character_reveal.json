@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED",
+  "shot_id": "najdi_character_reveal",
+  "image_path": "D:\\projects\\business-intelligence-platform\\backend\\assets\\najdi_campaign\\15_character_ai\\chef_character_ai_kitchen_01.png",
+  "input_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/inputs/najdi_character_reveal/20260725T083055Z/chef_character_ai_kitchen_01.png",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/8afa48ef-722a-4cec-befd-5a2029efbeb0",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/najdi_character_reveal/run-20260725T083055Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/najdi_character_reveal/run-20260725T083055Z/12115691095708860447/sample_0.mp4",
+  "model": "veo-3.1-generate-001",
+  "completed_at": "2026-07-25T08:31:51.383306+00:00"
+}

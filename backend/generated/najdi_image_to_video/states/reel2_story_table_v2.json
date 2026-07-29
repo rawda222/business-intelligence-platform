@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED",
+  "shot_id": "reel2_story_table_v2",
+  "image_path": "D:\\projects\\business-intelligence-platform\\backend\\assets\\najdi_campaign\\25_reel2_story_ready\\story_table_ref.jpg",
+  "input_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/inputs/reel2_story_table_v2/20260725T130303Z/story_table_ref.jpg",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/7b79ff0c-2eb6-4299-9204-d41e1e99ed16",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_story_table_v2/run-20260725T130303Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_story_table_v2/run-20260725T130303Z/6903337329139459320/sample_0.mp4",
+  "model": "veo-3.1-generate-001",
+  "completed_at": "2026-07-25T13:04:27.853826+00:00"
+}

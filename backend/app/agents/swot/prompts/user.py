@@ -62,6 +62,10 @@ def _theme_payload(
         "confidence_score": (
             theme.confidence_score
         ),
+        "requires_manual_review": (
+            theme.requires_manual_review
+        ),
+
         "source_platforms": list(
             theme.source_platforms
         ),
@@ -225,6 +229,16 @@ EACH SWOT ITEM MUST CONTAIN:
   - confidence
 - evidence_refs
 - frequency
+14. Any customer theme with requires_manual_review=true is an
+    unverified signal. Do not use it in a confirmed SWOT quadrant
+    or strategic_summary.
+
+15. If an unverified signal must be acknowledged, omit it from the
+    confirmed SWOT and leave it for the human-review workflow.
+
+16. A high confidence_score on a manual-review theme reflects
+    confidence in classification only. It does not verify the
+    underlying customer allegation.
 
 STRICT JSON FORMAT:
 

@@ -35,9 +35,54 @@ from app.services.swot_approval_workflow_service import (
 from app.services.swot_strategy_persistence_service import (
     get_swot_update_proposal,
 )
-from app.services.swot_update_workflow_service import (
-    create_swot_update_proposal_workflow,
+from app.services.unified_swot_workflow_service import (
+    run_unified_swot_workflow,
+    run_unified_swot_workflow_from_raw_data,
 )
+
+
+def _build_report_from_accepted(
+    generation: Any,
+) -> dict[str, list[dict[str, Any]]]:
+    """
+    Group grounded accepted_items into a SWOT report shape.
+
+    Used for the provisional path, where the generation produced
+    validated, evidence-grounded items but the overall result was
+    not auto-safe for the approval workflow (e.g. one blocked item).
+    Every item is flagged provisional and still requires human review.
+    """
+
+    report: dict[str, list[dict[str, Any]]] = {
+        "strengths": [],
+        "weaknesses": [],
+        "opportunities": [],
+        "threats": [],
+    }
+
+    for item in getattr(generation, "accepted_items", ()):
+        quadrant = getattr(item, "quadrant", "")
+
+        if quadrant not in report:
+            continue
+
+        report[quadrant].append(
+            {
+                "title": getattr(item, "title", ""),
+                "reasoning": getattr(item, "reasoning", ""),
+                "claim_strength": getattr(
+                    item,
+                    "claim_strength",
+                    "directional_not_validated",
+                ),
+                "evidence_references": list(
+                    getattr(item, "evidence_references", ())
+                ),
+                "provisional": True,
+            }
+        )
+
+    return report
 
 
 router = APIRouter(
@@ -56,6 +101,28 @@ router = APIRouter(
 # ============================================================
 class SwotProposalCreateRequest(BaseModel):
     """Request for one grounded SWOT update proposal."""
+
+    range_start: datetime
+
+    range_end: datetime
+
+    review_source: str = Field(
+        default="google_maps",
+        min_length=1,
+        max_length=50,
+    )
+
+    max_engagement_curves: int = Field(
+        default=5,
+        ge=0,
+        le=20,
+    )
+
+
+class SwotRunRequest(BaseModel):
+    """Run the full grounded SWOT workflow from raw data."""
+
+    raw_data: dict
 
     range_start: datetime
 
@@ -300,8 +367,81 @@ async def create_swot_update_proposal(
     )
 
     try:
+        result = await run_unified_swot_workflow(
+            business_id=business_id,
+            business_name=(
+                business.name
+            ),
+            business_type=(
+                business.business_type
+            ),
+            range_start=(
+                request.range_start
+            ),
+            range_end=(
+                request.range_end
+            ),
+            review_source=(
+                request.review_source
+            ),
+            max_engagement_curves=(
+                request
+                .max_engagement_curves
+            ),
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=(
+                status
+                .HTTP_422_UNPROCESSABLE_ENTITY
+            ),
+            detail=str(
+                error
+            ),
+        ) from error
+
+    return _proposal_response(
+        result.persisted_proposal
+    )
+
+
+@router.post(
+    "/run",
+    status_code=(
+        status.HTTP_201_CREATED
+    ),
+    summary=(
+        "Run the unified grounded SWOT workflow "
+        "from raw data"
+    ),
+)
+async def run_swot_workflow(
+    business_id: UUID,
+    request: SwotRunRequest,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: AsyncSession = Depends(
+        get_db
+    ),
+) -> dict[str, Any]:
+    """
+    Build customer voice, themes, trend intelligence, and a grounded
+    SWOT proposal directly from raw data.
+
+    The workflow selects initial or update mode automatically and
+    never approves the proposal.
+    """
+
+    business = await _require_owned_business(
+        db=db,
+        business_id=business_id,
+        current_user=current_user,
+    )
+
+    try:
         result = await (
-            create_swot_update_proposal_workflow(
+            run_unified_swot_workflow_from_raw_data(
                 business_id=business_id,
                 business_name=(
                     business.name
@@ -309,6 +449,7 @@ async def create_swot_update_proposal(
                 business_type=(
                     business.business_type
                 ),
+                raw_data=request.raw_data,
                 range_start=(
                     request.range_start
                 ),
@@ -335,9 +476,37 @@ async def create_swot_update_proposal(
             ),
         ) from error
 
-    return _proposal_response(
+    if result.persisted_proposal is None:
+        return {
+            "business_id": str(
+                result.business_id
+            ),
+            "mode": result.mode,
+            "coverage_level": (
+                result.coverage_level
+            ),
+            "status": "needs_more_data",
+            "proposal_id": None,
+            "requires_human_approval": True,
+            "swot_report": _build_report_from_accepted(
+                result.generation
+            ),
+            "data_gaps": list(
+                result.warnings
+            ),
+        }
+
+    response = _proposal_response(
         result.persisted_proposal
     )
+
+    response["mode"] = result.mode
+
+    response["coverage_level"] = (
+        result.coverage_level
+    )
+
+    return response
 
 
 # ============================================================

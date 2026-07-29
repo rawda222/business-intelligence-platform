@@ -576,3 +576,66 @@ def test_fallback_review_count_uses_unique_evidence_not_theme_sum():
         .target_review_count
         == 3
     )
+
+def test_preserves_manual_review_flag():
+    """
+    An unverified theme must retain its manual-review flag
+    when mapped into the SWOT v7 profile.
+    """
+
+    profile = build_swot_business_profile(
+        business_name="Starbucks",
+        business_type="coffee_shop",
+        themes_output={
+            "themes": [
+                {
+                    "theme_name": (
+                        "Product Safety Concern"
+                    ),
+                    "theme_category": (
+                        "product_safety"
+                    ),
+                    "entity_type": (
+                        "target_business"
+                    ),
+                    "frequency_count": 1,
+                    "sentiment_distribution": {
+                        "positive": 0,
+                        "negative": 1,
+                        "neutral": 0,
+                        "mixed": 0,
+                    },
+                    "confidence_score": 0.95,
+                    "requires_manual_review": True,
+                    "mentions": [
+                        "instagram:comment:safety-1",
+                    ],
+                    "representative_quotes": [
+                        (
+                            "An unverified customer "
+                            "safety concern."
+                        ),
+                    ],
+                }
+            ],
+        },
+        target_review_count=1,
+    )
+
+    assert len(profile.themes) == 1
+
+    theme = profile.themes[0]
+
+    assert (
+        theme.theme_category
+        == "product_safety"
+    )
+
+    assert (
+        theme.requires_manual_review
+        is True
+    )
+
+    assert theme.evidence_refs == [
+        "instagram:comment:safety-1",
+    ]

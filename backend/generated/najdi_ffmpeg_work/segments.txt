@@ -1,0 +1,8 @@
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/01_hook.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/02_lamb_detail.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/03_lamb_action_reprise.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/04_lamb_ribs.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/05_lamb_feast.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/06_rotisserie_action.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/07_restaurant_identity.mp4'
+file 'D:/projects/business-intelligence-platform/backend/generated/najdi_ffmpeg_work/08_end_card.mp4'

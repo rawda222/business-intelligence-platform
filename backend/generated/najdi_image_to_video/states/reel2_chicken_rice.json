@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED",
+  "shot_id": "reel2_chicken_rice",
+  "image_path": "D:\\projects\\business-intelligence-platform\\backend\\assets\\najdi_campaign\\23_reel2_veo_ready\\reel2_chicken_rice_source.jpeg",
+  "input_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/inputs/reel2_chicken_rice/20260725T102852Z/reel2_chicken_rice_source.jpeg",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/68b7700a-5467-4983-a1f2-b0b732fde2f0",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_chicken_rice/run-20260725T102852Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/reel2_chicken_rice/run-20260725T102852Z/13691031142714122659/sample_0.mp4",
+  "model": "veo-3.1-generate-001",
+  "completed_at": "2026-07-25T10:29:45.631453+00:00"
+}

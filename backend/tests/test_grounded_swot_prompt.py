@@ -302,3 +302,133 @@ def test_system_prompt_forbids_unsupported_claims():
         "evidence_refs are stable IDs"
         in SYSTEM_PROMPT
     )
+def test_prompt_contains_manual_review_flag():
+    """Manual-review status must reach the grounded LLM input."""
+
+    theme = ReviewTheme(
+        theme_category="product_safety",
+        entity_type="target_business",
+        frequency=1,
+        sentiment_balance=(
+            SentimentBalance(
+                negative=1,
+            )
+        ),
+        confidence_score=0.95,
+        requires_manual_review=True,
+        evidence_refs=[
+            "instagram:comment:safety-1",
+        ],
+        representative_quotes=[
+            "An unverified customer concern.",
+        ],
+        source_platforms=[
+            "instagram",
+        ],
+    )
+
+    profile = BusinessProfile(
+        business_name="Test Business",
+        business_type="coffee_shop",
+        themes=[theme],
+        allowed_evidence_references=[
+            "instagram:comment:safety-1",
+        ],
+    )
+
+    prompt = build_user_prompt(
+        profile=profile,
+        kept_themes=[theme],
+        benchmark_quality="unavailable",
+        benchmark_summary={},
+    )
+
+    data = _extract_grounding_data(
+        prompt
+    )
+
+    prompt_theme = data[
+        "customer_voice_themes"
+    ][0]
+
+    assert (
+        prompt_theme[
+            "theme_category"
+        ]
+        == "product_safety"
+    )
+
+    assert (
+        prompt_theme[
+            "requires_manual_review"
+        ]
+        is True
+    )
+
+    assert (
+        prompt_theme[
+            "evidence_refs"
+        ]
+        == [
+            "instagram:comment:safety-1",
+        ]
+    )
+    theme = ReviewTheme(
+        theme_category="product_safety",
+        entity_type="target_business",
+        frequency=1,
+        sentiment_balance=SentimentBalance(
+            negative=1,
+        ),
+        confidence_score=0.95,
+        requires_manual_review=True,
+        evidence_refs=[
+            "instagram:comment:safety-1",
+        ],
+        representative_quotes=[
+            "An unverified customer concern."
+        ],
+        source_platforms=[
+            "instagram",
+        ],
+    )
+
+    profile = BusinessProfile(
+        business_name="Test Business",
+        business_type="coffee_shop",
+        themes=[theme],
+        allowed_evidence_references=[
+            "instagram:comment:safety-1",
+        ],
+    )
+
+    prompt = build_user_prompt(
+        profile=profile,
+        kept_themes=[theme],
+        benchmark_quality="unavailable",
+        benchmark_summary={},
+    )
+
+    assert '"requires_manual_review": true' in prompt
+    assert '"theme_category": "product_safety"' in prompt
+
+def test_review_theme_preserves_manual_review_flag():
+    """ReviewTheme must not silently discard the safety flag."""
+
+    theme = ReviewTheme.model_validate(
+        {
+            "theme_category": (
+                "product_safety"
+            ),
+            "entity_type": (
+                "target_business"
+            ),
+            "frequency": 1,
+            "requires_manual_review": True,
+        }
+    )
+
+    assert (
+        theme.requires_manual_review
+        is True
+    )    

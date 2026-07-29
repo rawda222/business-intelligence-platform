@@ -1,0 +1,39 @@
+﻿{
+  "raw_data": {
+    "business_identity": {
+      "business_name": "Starbucks",
+      "industry": "Food & Beverage",
+      "category": "Coffee Shop"
+    },
+    "reviews": {
+      "raw_samples": [
+        { "text": "Can you guys get rid of the toxic refresher powder it making a lot of workers sick and the cream alternatives is more better", "source": "instagram", "date": "2026-07-27T02:27:45Z" },
+        { "text": "Need the marshmallow syrup to be permanent!! It is sooooo good", "source": "instagram", "date": "2026-07-26T19:18:21Z" },
+        { "text": "I TRIED IT IT WAS SO GOOD", "source": "instagram", "date": "2026-07-26T03:03:44Z" },
+        { "text": "is it going to be at the starbucks in target?", "source": "instagram", "date": "2026-07-26T18:49:55Z" },
+        { "text": "I love this", "source": "instagram", "date": "2026-07-13T05:10:14Z" },
+        { "text": "This needs to be a PERMANENT ITEM", "source": "instagram", "date": "2026-07-25T17:04:32Z" },
+        { "text": "Yay my kids will be thrilled", "source": "instagram", "date": "2026-07-26T22:01:34Z" },
+        { "text": "Perfect", "source": "instagram", "date": "2026-07-13T22:21:07Z" },
+        { "text": "eu queroooooooooooo", "source": "instagram", "date": "2026-07-26T17:18:45Z" },
+        { "text": "How to get it now in Canada?", "source": "instagram", "date": "2026-07-27T05:22:01Z" },
+        { "text": "Omg I am running now love", "source": "instagram", "date": "2026-07-26T18:26:31Z" },
+        { "text": "mdssss precisooo", "source": "instagram", "date": "2026-07-26T17:18:50Z" },
+        { "text": "3/4/5 is right for me", "source": "instagram", "date": "2026-07-27T05:48:16Z" },
+        { "text": "If its from you, all of the above", "source": "instagram", "date": "2026-07-27T05:16:58Z" },
+        { "text": "I only drink matcha especially from Starbucks! Pro tip put whip cream it tastes so good", "source": "instagram", "date": "2026-07-27T02:33:04Z" },
+        { "text": "Omg thank god it has been years", "source": "instagram", "date": "2026-07-18T20:31:30Z" },
+        { "text": "Omg it is so good!", "source": "instagram", "date": "2026-07-25T18:49:14Z" },
+        { "text": "My favorite", "source": "instagram", "date": "2026-07-24T11:35:14Z" }
+      ]
+    },
+    "competitors": [
+      { "name": "Cilantro Cafe" },
+      { "name": "Costa Coffee" }
+    ]
+  },
+  "range_start": "2026-07-01T00:00:00Z",
+  "range_end": "2026-07-28T23:59:59Z",
+  "review_source": "instagram",
+  "max_engagement_curves": 5
+}

@@ -533,6 +533,13 @@ def _build_review_theme(
                 )
             )
         ),
+        
+        requires_manual_review=bool(
+            theme.get(
+                "requires_manual_review",
+                False,
+            )
+        ),
         target_score=(
             _safe_optional_float(
                 theme.get(
@@ -698,3 +705,5 @@ def build_swot_business_profile(
             ),
         ),
     )
+
+

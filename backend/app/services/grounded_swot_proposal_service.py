@@ -37,6 +37,7 @@ from app.services.swot_evidence_candidate_service import (
 from app.services.swot_update_proposal_service import (
     SwotUpdateProposal,
     build_swot_update_proposal,
+    build_initial_swot_proposal,
 )
 
 
@@ -499,6 +500,97 @@ def build_grounded_swot_update_proposal(
             == "draft"
             and proposal
             .requires_human_approval
+        ),
+        warnings=warnings,
+    )
+
+def build_grounded_swot_initial_proposal(
+    *,
+    bundle: StrongSwotInputBundle,
+    generation: GroundedSwotGenerationResult,
+) -> GroundedSwotProposalResult:
+    """
+    Build the first grounded SWOT proposal when no approved
+    baseline exists.
+    """
+
+    # ✅ Validate business consistency
+    if generation.business_id != bundle.business_id:
+        raise ValueError(
+            "Grounded generation business_id does not "
+            "match the Strong SWOT bundle business_id."
+        )
+
+    # ✅ Safety checks
+    if not generation.safe_for_update_proposal:
+        raise ValueError(
+            "Grounded SWOT generation is not safe "
+            "for the approval workflow."
+        )
+
+    # ✅ Blocked items check
+    if generation.validation.blocked_items:
+        raise ValueError(
+            "Grounded SWOT generation contains blocked items."
+        )
+
+    # ✅ Validation errors check
+    if any(
+        violation.severity == "error"
+        for violation in generation.validation.violations
+    ):
+        raise ValueError(
+            "Grounded SWOT generation contains "
+            "evidence validation errors."
+        )
+
+    # ✅ Convert accepted items → candidates
+    candidates = tuple(
+        _to_candidate(
+            business_id=bundle.business_id,
+            bundle=bundle,
+            item=item,
+        )
+        for item in generation.accepted_items
+    )
+
+    # ✅ Ensure we have candidates
+    if not candidates:
+        raise ValueError(
+            "Grounded SWOT generation has no accepted "
+            "items for an initial proposal."
+        )
+
+    # ✅ Build initial proposal
+    proposal = build_initial_swot_proposal(
+        business_id=bundle.business_id,
+        candidates=candidates,
+        source_coverage=tuple(
+    bundle.swot_profile.source_coverage
+),
+    )
+
+    # ✅ Merge warnings
+    warnings = _unique_strings(
+        generation.warnings
+        + (
+            "No approved SWOT baseline existed. "
+            "This proposal creates the initial SWOT.",
+        )
+    )
+
+    # ✅ Final result
+    return GroundedSwotProposalResult(
+        business_id=bundle.business_id,
+        generation=generation,
+        candidates=candidates,
+        proposal=proposal,
+        candidate_count=len(candidates),
+        requires_human_approval=True,
+        safe_for_approval_workflow=bool(
+            candidates
+            and proposal.status == "draft"
+            and proposal.requires_human_approval
         ),
         warnings=warnings,
     )

@@ -1,0 +1,10 @@
+{
+  "status": "COMPLETED",
+  "project_id": "generate-502313",
+  "location": "us-central1",
+  "model": "veo-3.1-generate-001",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/bc9d5407-5ae3-438b-9cbe-b9fac8a76b2d",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/run-20260719T150429Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/run-20260719T150429Z/801761656547609359/sample_0.mp4",
+  "completed_at": "2026-07-19T15:05:52.299665+00:00"
+}

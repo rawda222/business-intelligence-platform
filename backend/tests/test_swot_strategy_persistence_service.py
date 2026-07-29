@@ -102,6 +102,8 @@ class FakeProposal:
 
     base_engine_version: str
 
+    proposal_mode = "update"
+
     proposal_version: str
 
     status: str

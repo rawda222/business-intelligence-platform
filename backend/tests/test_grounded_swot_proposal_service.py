@@ -18,6 +18,7 @@ from app.services.grounded_swot_output_validator import (
 )
 from app.services.grounded_swot_proposal_service import (
     build_grounded_swot_update_proposal,
+    build_grounded_swot_initial_proposal,
 )
 from app.services.legacy_swot_adapter import (
     NormalizedSwotBaseline,
@@ -387,3 +388,53 @@ def test_cross_business_generation_is_rejected():
                 )
             ),
         )
+
+def test_builds_initial_proposal_without_baseline():
+    """
+    Initial SWOT proposal should be created without
+    an existing baseline report.
+    """
+
+    result = (
+        build_grounded_swot_initial_proposal(
+            bundle=_bundle(),
+            generation=_generation(),
+        )
+    )
+
+    assert result.business_id == (
+        _BUSINESS_ID
+    )
+
+    assert result.proposal.proposal_mode == (
+        "initial"
+    )
+
+    assert result.proposal.base_report_id is None
+
+    assert (
+        result.proposal.base_engine_version
+        is None
+    )
+
+    assert result.proposal.status == (
+        "draft"
+    )
+
+    assert (
+        result.requires_human_approval
+        is True
+    )
+
+    assert (
+        result.safe_for_approval_workflow
+        is True
+    )
+
+    assert (
+        result.candidate_count > 0
+    )
+
+    assert len(
+        result.proposal.add_items
+    ) > 0        

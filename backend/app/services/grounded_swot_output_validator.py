@@ -484,6 +484,7 @@ def _theme_allowed_quadrants(
         ):
             return (
                 "strengths",
+                "opportunities",
             )
 
         if (
@@ -492,6 +493,7 @@ def _theme_allowed_quadrants(
         ):
             return (
                 "weaknesses",
+                "threats",
             )
 
         return ()

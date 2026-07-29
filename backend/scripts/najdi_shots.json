@@ -1,0 +1,20 @@
+[
+  {
+    "id": "reel2_story_restaurant_v2",
+    "image": "assets/najdi_campaign/25_reel2_story_ready/story_restaurant_ref.jpg",
+    "duration_seconds": 8,
+    "prompt": "Create an eight-second vertical commercial shot based entirely on the provided restaurant exterior image. The source image must remain the continuous visual setting from beginning to end. Start with the exact restaurant exterior shown in the reference. Use a slow cinematic dolly forward toward the existing entrance, followed by a subtle lateral camera movement that reveals the existing facade, doorway, lighting, walls and architectural details from a slightly different perspective. Add only subtle realistic environmental movement, controlled reflections and gentle changes in focus. Do not transition indoors. Do not generate a different restaurant interior. Do not replace the facade, entrance, Arabic sign, menu boards, windows, plants, materials or colors. Do not introduce invented rooms, counters, chandeliers, furniture, food displays, people, vehicles, new signage, altered lettering, prices, logos or unrelated architecture. The reference restaurant must remain clearly recognizable in every shot. Premium Saudi restaurant commercial, vertical 9:16, stable cinematic camera, no dialogue, no singing, no music, no watermark and no camera shake."
+  },
+  {
+    "id": "reel2_story_kitchen_v2",
+    "image": "assets/najdi_campaign/25_reel2_story_ready/story_kitchen_ref.jpg",
+    "duration_seconds": 8,
+    "prompt": "Create an eight-second vertical food commercial based entirely on the provided rotisserie image. The exact rotisserie wall and the existing rows of roasted chicken must remain visible and recognizable throughout the sequence. Begin with the complete rotisserie view from the reference image. Perform a controlled vertical camera move along the existing chicken rows, then transition to a close detail of the existing golden roasted surface before gently pulling back to the original rotisserie context. Add subtle realistic heat shimmer, warm reflections and a very small amount of natural cooking smoke. Do not generate a different kitchen, a new grill, additional chicken rows, people, hands, serving actions, excessive fire, invented equipment, text, prices, logos, dialogue or unrelated food. Preserve the exact rotisserie structure, quantities, chicken appearance, colors and lighting. Premium Saudi restaurant preparation shot, vertical 9:16, stable varied camera movement, no singing, no music, no watermark and no camera shake."
+  },
+  {
+    "id": "reel2_story_table_v2",
+    "image": "assets/najdi_campaign/25_reel2_story_ready/story_table_ref.jpg",
+    "duration_seconds": 8,
+    "prompt": "Create an eight-second vertical dining commercial based entirely on the provided top-down table image. The exact dining spread must remain the continuous scene throughout the video. Begin with the complete overhead view from the reference. Use controlled editorial camera movement across the existing chicken and rice dish, bread, bowls, herbs and side dishes, then return to a wider view of the same complete table. Add subtle steam only above the clearly hot existing dishes and gentle natural light movement. Do not generate a new table, new restaurant interior, extra dishes, changed food quantities, people, hands, eating actions, invented ingredients, text, prices, logos or unrelated objects. Preserve the exact dish identities, portions, arrangement, colors and table surface shown in the reference. Premium Saudi family dining advertisement, vertical 9:16, stable cinematic camera, no dialogue, no singing, no music, no watermark and no camera shake."
+  }
+]

@@ -1,0 +1,31 @@
+﻿[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+ScaledBorderAndShadow: yes
+WrapStyle: 2
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Brand,Tahoma,46,&H00F6E8D5,&H00F6E8D5,&H001B1210,&HFF000000,-1,0,0,0,100,100,0,0,1,2,1,7,55,55,55,1
+Style: Hook,Tahoma,72,&H00FFFFFF,&H00FFFFFF,&H00201511,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,75,75,0,1
+Style: Price,Tahoma,94,&H0000D7FF,&H0000D7FF,&H00201511,&HFF000000,-1,0,0,0,100,100,0,0,1,4,1,5,100,100,0,1
+Style: Middle,Tahoma,58,&H00FFFFFF,&H00FFFFFF,&H00201511,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,70,70,0,1
+Style: EndTitle,Tahoma,68,&H00F6E8D5,&H00F6E8D5,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,2,1,5,80,80,0,1
+Style: EndProduct,Tahoma,86,&H00FFFFFF,&H00FFFFFF,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,80,80,0,1
+Style: EndPrice,Tahoma,104,&H0000D7FF,&H0000D7FF,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,4,1,5,80,80,0,1
+Style: EndCTA,Tahoma,40,&H00F6E8D5,&H00F6E8D5,&H00170F0C,&HFF000000,-1,0,0,0,100,100,0,0,1,2,1,5,50,50,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 5,0:00:00.00,0:00:26.00,Brand,,0,0,0,,{n7\pos(55,70)ad(100,150)}مطعم شعبي نجدي
+Dialogue: 6,0:00:00.00,0:00:03.20,Hook,,0,0,0,,{n5\pos(540,1460)ad(70,180)}اللحم المخصوص
+Dialogue: 7,0:00:00.15,0:00:03.20,Price,,0,0,0,,{n5\pos(540,1600)ad(80,180)}39 ريال
+Dialogue: 6,0:00:04.00,0:00:09.80,Middle,,0,0,0,,{n5\pos(540,1580)ad(150,180)}طعم أصيل... بنكهة خاصة
+Dialogue: 6,0:00:14.00,0:00:19.80,Middle,,0,0,0,,{n5\pos(540,1580)ad(150,180)}اللحم بطل السفرة
+Dialogue: 3,0:00:26.00,0:00:30.00,EndTitle,,0,0,0,,{n5\pos(540,500)ad(180,200)}مطعم شعبي نجدي
+Dialogue: 3,0:00:26.60,0:00:30.00,EndProduct,,0,0,0,,{n5\pos(540,780)ad(160,200)}اللحم المخصوص
+Dialogue: 4,0:00:27.20,0:00:30.00,EndPrice,,0,0,0,,{n5\pos(540,1060)ad(150,200)}39 ريال
+Dialogue: 3,0:00:28.00,0:00:30.00,EndCTA,,0,0,0,,{n5\pos(540,1370)ad(160,200)}اطلبه الآن عبر
+Dialogue: 3,0:00:28.35,0:00:30.00,EndCTA,,0,0,0,,{n5\pos(540,1460)ad(160,200)}جاهز - هنقرستيشن - نينجا

@@ -52,6 +52,17 @@ class ReviewTheme(BaseModel):
         le=1.0,
     )
 
+    requires_manual_review: bool = Field(
+        default=False,
+        description=(
+            "True when the customer theme is an "
+            "unverified signal that requires human "
+            "review before strategic use."
+        ),
+    )
+
+    target_score: Optional[float] = None
+
     target_score: Optional[float] = None
 
     competitor_score: Optional[float] = None

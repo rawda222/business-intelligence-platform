@@ -1,0 +1,19 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+ScaledBorderAndShadow: yes
+WrapStyle: 2
+YCbCr Matrix: TV.709
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Brand,Tahoma,70,&H00F6E8D5,&H00F6E8D5,&H00150E0B,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,60,60,0,1
+Style: CTA,Tahoma,50,&H00FFFFFF,&H00FFFFFF,&H00150E0B,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,60,60,0,1
+Style: Apps,Tahoma,42,&H0000D7FF,&H0000D7FF,&H00150E0B,&HFF000000,-1,0,0,0,100,100,0,0,1,3,1,5,55,55,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 5,0:00:24.50,0:00:30.00,Brand,,0,0,0,,{\an5\pos(540,1190)\fad(250,250)}مطعم شعبي نجدي
+Dialogue: 6,0:00:25.20,0:00:30.00,CTA,,0,0,0,,{\an5\pos(540,1370)\fad(220,250)}اطلبه الحين عبر
+Dialogue: 6,0:00:25.70,0:00:30.00,Apps,,0,0,0,,{\an5\pos(540,1470)\fad(220,250)}جاهز - هنقرستيشن - نينجا

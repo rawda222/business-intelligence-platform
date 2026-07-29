@@ -1,148 +1,722 @@
 """
 Scraper Adapter
-================
-Converts scraper output (from Volume Cafe-style format)
-into the standardized format the BI Pipeline expects.
+===============
+
+Converts scraper output into the standardized input expected by
+the Business Intelligence preprocessing pipeline.
+
+Supported inputs:
+
+1. Scraper output:
+   - business_identity
+   - reviews.raw_samples
+   - competitors
+
+2. Pipeline-style input:
+   - business_name
+   - business_reviews
+   - competitors
+
+The adapter also removes exact duplicate customer records while
+preserving the original text and relevant metadata.
 """
+
+from __future__ import annotations
+
+import ast
 from typing import Any, Dict, List
 
 
-def adapt_scraper_data(raw: Dict[str, Any]) -> Dict[str, Any]:
+def adapt_scraper_data(
+    raw: Dict[str, Any],
+) -> Dict[str, Any]:
     """
-    Convert scraper output to BI Pipeline format.
+    Convert raw scraper data into BI Pipeline input format.
 
-    Supports:
-    1. Scraper format (with business_identity, reviews.raw_samples, competitors)
-    2. Simple format (business_name + business_reviews directly)
+    The returned structure contains:
 
-    Returns: Standardized dict ready for pipeline.
+    - business_name
+    - business_type
+    - business_profile
+    - business_reviews
+    - competitors
+    - evidence_refs
+    - quality_report
+    - optional brand and marketing fields
     """
 
-    # If already in pipeline format → return as-is
-    if "business_reviews" in raw and "business_name" in raw:
-        return raw
+    if not isinstance(raw, dict):
+        raise TypeError(
+            "Scraper input must be a dictionary."
+        )
 
     output: Dict[str, Any] = {}
 
-    # ============================
+    # ========================================================
     # Business Identity
-    # ============================
-    identity = raw.get("business_identity", {}) or {}
-    output["business_name"] = identity.get("business_name", "Unknown")
+    # ========================================================
 
-    category = identity.get("subcategory") or identity.get("category") or "general"
-    output["business_type"] = category.lower()
+    identity = raw.get(
+        "business_identity",
+        {},
+    ) or {}
 
-    # ============================
-    # Reviews (from raw_samples or reviews.raw_samples)
-    # ============================
-    reviews = []
+    if not isinstance(identity, dict):
+        identity = {}
 
-    # Path 1: raw["reviews"]["raw_samples"]
-    raw_reviews_block = raw.get("reviews", {}) or {}
-    raw_samples = raw_reviews_block.get("raw_samples", []) or []
+    business_name = (
+        identity.get("business_name")
+        or identity.get("name")
+        or raw.get("business_name")
+        or "Unknown"
+    )
 
-    # Path 2: raw["raw_samples"]
-    if not raw_samples:
-        raw_samples = raw.get("raw_samples", []) or []
+    category = (
+        identity.get("subcategory")
+        or identity.get("category")
+        or raw.get("business_type")
+        or "general"
+    )
 
-    # Path 3: raw["business_reviews"]
-    if not raw_samples:
-        raw_samples = raw.get("business_reviews", []) or []
+    output["business_name"] = str(
+        business_name
+    ).strip()
 
-    for r in raw_samples:
-        text = _extract_text(r)
-        if text:
-            reviews.append({"text": text})
+    output["business_type"] = (
+        str(category)
+        .strip()
+        .lower()
+        .replace(" ", "_")
+    )
 
-    output["business_reviews"] = reviews
+    output["business_profile"] = {
+        "business_identity": identity,
+        "offerings": raw.get(
+            "offerings",
+            [],
+        ),
+        "marketing_signals": raw.get(
+            "marketing_signals",
+            {},
+        ),
+        "brand_voice": raw.get(
+            "brand_voice",
+            {},
+        ),
+        "commercial": raw.get(
+            "commercial",
+            {},
+        ),
+        "contact_presence": raw.get(
+            "contact_presence",
+            {},
+        ),
+        "visual_identity": raw.get(
+            "visual_identity",
+            {},
+        ),
+        "insights": raw.get(
+            "insights",
+            {},
+        ),
+        "known_competitors": raw.get(
+            "known_competitors",
+            [],
+        ),
+        "confidence": raw.get(
+            "confidence",
+            {},
+        ),
+        "schema_version": raw.get(
+            "schema_version",
+        ),
+    }
 
-    # ============================
+    # ========================================================
+    # Business Reviews
+    # ========================================================
+
+    raw_samples = _find_business_reviews(
+        raw
+    )
+
+    business_reviews: List[
+        Dict[str, Any]
+    ] = []
+
+    for review in raw_samples:
+        normalized_review = (
+            _adapt_review_record(
+                review
+            )
+        )
+
+        if normalized_review is not None:
+            business_reviews.append(
+                normalized_review
+            )
+
+    output["business_reviews"] = (
+        _deduplicate_reviews(
+            business_reviews
+        )
+    )
+
+    # ========================================================
     # Competitors
-    # ============================
-    competitors = []
-    for comp in raw.get("competitors", []) or []:
-        comp_name = comp.get("name", "Competitor")
-        comp_reviews = []
+    # ========================================================
 
-        for cr in comp.get("reviews_sample", []) or []:
-            txt = _extract_text(cr)
-            if txt:
-                comp_reviews.append({"text": txt})
+    adapted_competitors: List[
+        Dict[str, Any]
+    ] = []
 
-        competitors.append({
-            "name": comp_name,
-            "reviews": comp_reviews,
-            "rating": comp.get("rating"),
-            "positioning": comp.get("positioning"),
-        })
+    raw_competitors = raw.get(
+        "competitors",
+        [],
+    ) or []
 
-    output["competitors"] = competitors
+    if not isinstance(
+        raw_competitors,
+        list,
+    ):
+        raw_competitors = []
 
-    # ============================
-    # Marketing signals (optional)
-    # ============================
-    if "marketing_signals" in raw:
-        output["marketing_signals"] = raw["marketing_signals"]
+    for competitor in raw_competitors:
+        if not isinstance(
+            competitor,
+            dict,
+        ):
+            continue
 
-    if "brand_voice" in raw:
-        output["brand_voice"] = raw["brand_voice"]
+        competitor_reviews: List[
+            Dict[str, Any]
+        ] = []
 
-    if "commercial" in raw:
-        output["commercial"] = raw["commercial"]
+        reviews_sample = (
+            competitor.get(
+                "reviews_sample",
+                [],
+            )
+            or competitor.get(
+                "reviews",
+                [],
+            )
+            or []
+        )
+
+        if not isinstance(
+            reviews_sample,
+            list,
+        ):
+            reviews_sample = []
+
+        for review in reviews_sample:
+            normalized_review = (
+                _adapt_review_record(
+                    review
+                )
+            )
+
+            if normalized_review is not None:
+                competitor_reviews.append(
+                    normalized_review
+                )
+
+        competitor_reviews = (
+            _deduplicate_reviews(
+                competitor_reviews
+            )
+        )
+
+        adapted_competitors.append(
+            {
+                "name": (
+                    competitor.get("name")
+                    or "Competitor"
+                ),
+                "reviews": (
+                    competitor_reviews
+                ),
+                "reviews_sample": (
+                    competitor_reviews
+                ),
+                "rating": competitor.get(
+                    "rating"
+                ),
+                "review_count": (
+                    competitor.get(
+                        "review_count"
+                    )
+                ),
+                "website": competitor.get(
+                    "website"
+                ),
+                "maps_url": competitor.get(
+                    "maps_url"
+                ),
+                "positioning": (
+                    competitor.get(
+                        "positioning"
+                    )
+                ),
+                "description": (
+                    competitor.get(
+                        "description"
+                    )
+                ),
+                "discovery_method": (
+                    competitor.get(
+                        "discovery_method"
+                    )
+                ),
+                "peer_fit_score": (
+                    competitor.get(
+                        "peer_fit_score"
+                    )
+                ),
+                "website_facts": (
+                    competitor.get(
+                        "website_facts",
+                        [],
+                    )
+                ),
+            }
+        )
+
+    output["competitors"] = (
+        adapted_competitors
+    )
+
+    # ========================================================
+    # Evidence and Quality Metadata
+    # ========================================================
+
+    output["evidence_refs"] = raw.get(
+        "evidence_refs",
+        [],
+    ) or []
+
+    original_review_count = len(
+        raw_samples
+    )
+
+    unique_review_count = len(
+        output["business_reviews"]
+    )
+
+    existing_quality_report = raw.get(
+        "quality_report",
+        {},
+    ) or {}
+
+    if not isinstance(
+        existing_quality_report,
+        dict,
+    ):
+        existing_quality_report = {}
+
+    output["quality_report"] = {
+        **existing_quality_report,
+        "adapter": "scraper_adapter",
+        "original_review_count": (
+            original_review_count
+        ),
+        "unique_review_count": (
+            unique_review_count
+        ),
+        "duplicates_removed": max(
+            0,
+            original_review_count
+            - unique_review_count,
+        ),
+    }
+
+    # ========================================================
+    # Optional Top-Level Fields
+    # ========================================================
+
+    optional_fields = (
+        "offerings",
+        "marketing_signals",
+        "brand_voice",
+        "commercial",
+        "contact_presence",
+        "visual_identity",
+        "insights",
+        "known_competitors",
+        "confidence",
+        "schema_version",
+    )
+
+    for field_name in optional_fields:
+        if field_name in raw:
+            output[field_name] = raw[
+                field_name
+            ]
 
     return output
 
 
-def _extract_text(review_item: Any) -> str:
+def _find_business_reviews(
+    raw: Dict[str, Any],
+) -> List[Any]:
     """
-    Reviews can be:
+    Find customer records across supported input paths.
+
+    Search order:
+
+    1. reviews.raw_samples
+    2. raw_samples
+    3. business_reviews
+    """
+    reviews_block = raw.get(
+        "reviews",
+        {},
+    ) or {}
+
+    if not isinstance(
+        reviews_block,
+        dict,
+    ):
+        reviews_block = {}
+
+    raw_samples = reviews_block.get(
+        "raw_samples",
+        [],
+    ) or []
+
+    if not raw_samples:
+        raw_samples = raw.get(
+            "raw_samples",
+            [],
+        ) or []
+
+    if not raw_samples:
+        raw_samples = raw.get(
+            "business_reviews",
+            [],
+        ) or []
+
+    if not isinstance(
+        raw_samples,
+        list,
+    ):
+        raise TypeError(
+            "Customer review records must be a list."
+        )
+
+    return raw_samples
+
+
+def _adapt_review_record(
+    review_item: Any,
+) -> Dict[str, Any] | None:
+    """
+    Convert one Review or Comment into pipeline format.
+
+    The original text is preserved after whitespace cleanup.
+    """
+
+    if isinstance(
+        review_item,
+        str,
+    ):
+        text = _clean_review_text(
+            review_item
+        )
+
+        if not text:
+            return None
+
+        return {
+            "text": text,
+            "rating": None,
+            "source": "unknown",
+            "date": None,
+        }
+
+    if not isinstance(
+        review_item,
+        dict,
+    ):
+        return None
+
+    text = _extract_text(
+        review_item
+    )
+
+    if not text:
+        return None
+
+    adapted: Dict[str, Any] = {
+        "text": text,
+        "rating": review_item.get(
+            "rating"
+        ),
+        "source": (
+            review_item.get("source")
+            or review_item.get("platform")
+            or "unknown"
+        ),
+        "date": (
+            review_item.get("date")
+            or review_item.get(
+                "published_at"
+            )
+            or review_item.get(
+                "created_at"
+            )
+        ),
+    }
+
+    optional_fields = (
+        "review_id",
+        "record_id",
+        "id",
+        "author",
+        "language",
+        "sentiment",
+        "category_tags",
+        "likes",
+        "comments",
+        "shares",
+        "engagement",
+        "url",
+    )
+
+    for field_name in optional_fields:
+        if field_name in review_item:
+            adapted[field_name] = (
+                review_item[field_name]
+            )
+
+    return adapted
+
+
+def _deduplicate_reviews(
+    reviews: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    """
+    Remove exact duplicate customer records.
+
+    Duplicate identity uses:
+
+    - normalized text
+    - normalized source
+    - normalized date
+
+    The first original record is preserved.
+    """
+
+    unique_reviews: List[
+        Dict[str, Any]
+    ] = []
+
+    seen: set[
+        tuple[str, str, str]
+    ] = set()
+
+    for review in reviews:
+        if not isinstance(
+            review,
+            dict,
+        ):
+            continue
+
+        text = _clean_review_text(
+            str(
+                review.get(
+                    "text",
+                    "",
+                )
+            )
+        )
+
+        source = (
+            str(
+                review.get(
+                    "source",
+                    "unknown",
+                )
+            )
+            .strip()
+            .casefold()
+        )
+
+        date_value = review.get(
+            "date"
+        )
+
+        date = (
+            ""
+            if date_value is None
+            else str(date_value).strip()
+        )
+
+        if not text:
+            continue
+
+        duplicate_key = (
+            text.casefold(),
+            source,
+            date,
+        )
+
+        if duplicate_key in seen:
+            continue
+
+        seen.add(
+            duplicate_key
+        )
+
+        preserved_record = dict(
+            review
+        )
+
+        preserved_record["text"] = (
+            text
+        )
+
+        preserved_record["source"] = (
+            source
+        )
+
+        unique_reviews.append(
+            preserved_record
+        )
+
+    return unique_reviews
+
+
+def _extract_text(
+    review_item: Any,
+) -> str:
+    """
+    Extract text from supported review formats.
+
+    Supported examples:
+
+    - plain string
     - {"text": "..."}
     - {"text": {"ar": "..."}}
-    - {"text": "{'ar': '...'}"}  (stringified dict)
-    - plain string
+    - {"text": {"en": "..."}}
+    - stringified dictionary
     """
-    if isinstance(review_item, str):
-        return _clean_review_text(review_item)
 
-    if isinstance(review_item, dict):
-        text = review_item.get("text", "")
+    if isinstance(
+        review_item,
+        str,
+    ):
+        return _clean_review_text(
+            review_item
+        )
 
-        # Case: text is dict {"ar": "..."}
-        if isinstance(text, dict):
-            return _clean_review_text(text.get("ar") or text.get("en") or "")
+    if not isinstance(
+        review_item,
+        dict,
+    ):
+        return ""
 
-        # Case: text is stringified dict
-        if isinstance(text, str):
-            return _clean_review_text(text)
+    text = review_item.get(
+        "text",
+        "",
+    )
+
+    if isinstance(
+        text,
+        dict,
+    ):
+        selected_text = (
+            text.get("ar")
+            or text.get("en")
+            or next(
+                (
+                    value
+                    for value in text.values()
+                    if isinstance(
+                        value,
+                        str,
+                    )
+                    and value.strip()
+                ),
+                "",
+            )
+        )
+
+        return _clean_review_text(
+            str(selected_text)
+        )
+
+    if isinstance(
+        text,
+        str,
+    ):
+        return _clean_review_text(
+            text
+        )
 
     return ""
 
 
-def _clean_review_text(text: str) -> str:
+def _clean_review_text(
+    text: str,
+) -> str:
     """
-    Clean review text:
-    - Remove {'ar': '...'} wrappers
-    - Remove escaped newlines
-    - Strip whitespace
+    Clean Review text while preserving its meaning.
+
+    Operations:
+
+    - Parse supported stringified dictionaries.
+    - Replace escaped and real newlines.
+    - Collapse repeated whitespace.
     """
+
     if not text:
         return ""
 
-    text = str(text).strip()
+    cleaned = str(
+        text
+    ).strip()
 
-    # If it looks like a stringified dict
-    if text.startswith("{") and ("'ar'" in text or '"ar"' in text):
+    if (
+        cleaned.startswith("{")
+        and (
+            "'ar'" in cleaned
+            or '"ar"' in cleaned
+            or "'en'" in cleaned
+            or '"en"' in cleaned
+        )
+    ):
         try:
-            import ast
-            parsed = ast.literal_eval(text)
-            if isinstance(parsed, dict):
-                text = parsed.get("ar") or parsed.get("en") or ""
-        except Exception:
+            parsed = ast.literal_eval(
+                cleaned
+            )
+
+            if isinstance(
+                parsed,
+                dict,
+            ):
+                cleaned = str(
+                    parsed.get("ar")
+                    or parsed.get("en")
+                    or ""
+                )
+        except (
+            ValueError,
+            SyntaxError,
+        ):
             pass
 
-    # Clean escaped newlines
-    text = text.replace("\\n", " ").replace("\n", " ")
-    text = " ".join(text.split())  # collapse whitespace
+    cleaned = cleaned.replace(
+        "\\n",
+        " ",
+    ).replace(
+        "\n",
+        " ",
+    )
 
-    return text.strip()
+    cleaned = " ".join(
+        cleaned.split()
+    )
+
+    return cleaned.strip()

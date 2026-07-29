@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED",
+  "shot_id": "hero_lamb",
+  "image_path": "D:\\projects\\business-intelligence-platform\\backend\\assets\\najdi_campaign\\19_veo_ready\\lamb_hero_whole_01_9x16.jpg",
+  "input_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/inputs/hero_lamb/20260722T070613Z/lamb_hero_whole_01_9x16.jpg",
+  "operation_name": "projects/generate-502313/locations/us-central1/publishers/google/models/veo-3.1-generate-001/operations/c8edfeb1-f42a-46d2-adcf-46353f88180c",
+  "output_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/hero_lamb/run-20260722T070613Z/",
+  "video_gcs_uri": "gs://generate-502313-veo-rawda-20260719/najdi/pilot-01/image-to-video/hero_lamb/run-20260722T070613Z/6572090554896938057/sample_0.mp4",
+  "model": "veo-3.1-generate-001",
+  "completed_at": "2026-07-22T07:07:24.792112+00:00"
+}
