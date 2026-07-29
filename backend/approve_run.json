@@ -1,9 +1,9 @@
 ﻿{
   "decisions": [
-    { "candidate_id": "grounded:fd46ae61-6e81-58f8-8488-358d94f12d21", "decision": "approve" },
-    { "candidate_id": "grounded:8efe8db3-389f-5fe7-8368-cee6ecde9cc3", "decision": "approve" },
-    { "candidate_id": "grounded:6120b68f-0bea-5a73-887b-4d8d2b9bd446", "decision": "approve" },
-    { "candidate_id": "grounded:b8b2966c-9116-5e39-af61-524c4dc235bf", "decision": "approve" },
-    { "candidate_id": "grounded:7262e7d7-0def-5958-b769-7ce21bd50baa", "decision": "approve" }
+    { "candidate_id": "grounded:c33fcaf1-a4aa-5957-b1d3-f978dbd1f14f", "decision": "approve" },
+    { "candidate_id": "grounded:3c21b8e4-a75f-569d-b4d1-ecc3969e412e", "decision": "approve" },
+    { "candidate_id": "grounded:b6aee178-7a42-539f-b6fd-7aa62a2d14f8", "decision": "approve" },
+    { "candidate_id": "grounded:217e5829-ead5-52c5-abc7-8be49f53a0fe", "decision": "approve" },
+    { "candidate_id": "grounded:788c0432-a39d-573d-ba02-9a1064992e29", "decision": "approve" }
   ]
 }

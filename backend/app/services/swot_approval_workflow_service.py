@@ -908,7 +908,7 @@ def restore_swot_update_proposal(
             else None
         ),
         base_engine_version=(
-            _required_text(
+            _optional_text(
                 data.get(
                     "base_engine_version"
                 ),
