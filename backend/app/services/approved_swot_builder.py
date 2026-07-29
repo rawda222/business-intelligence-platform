@@ -798,7 +798,9 @@ def build_approved_swot_update(
             not in {
                 "validated",
                 "internally_supported",
+                "directional",
             }
+
         )
     ]
 
