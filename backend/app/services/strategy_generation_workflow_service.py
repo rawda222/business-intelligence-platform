@@ -725,6 +725,7 @@ def restore_approved_swot_update(
         field_name=(
             "approved SWOT base_report_id"
         ),
+        allow_none=True,
     )
 
     source_proposal_id = _uuid_value(
